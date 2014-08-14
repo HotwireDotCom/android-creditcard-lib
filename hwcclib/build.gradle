@@ -1,4 +1,12 @@
 apply plugin: 'com.android.library'
+apply plugin: "jacoco"
+
+sourceSets {
+    unitTest {
+        java.srcDir file('src/androidTest/java/*/CreditCardUtilitiesTest.java')
+    }
+}
+
 
 android {
     compileSdkVersion 19
@@ -12,6 +20,9 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        debug{
+            testCoverageEnabled true
+        }
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -21,4 +32,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    unitTestCompile 'junit:junit:4.10'
+
 }
