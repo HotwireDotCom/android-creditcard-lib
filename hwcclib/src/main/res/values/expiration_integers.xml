@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">hwcclib</string>
+    <integer name="expiration_picker_max_years">20</integer>
 </resources>

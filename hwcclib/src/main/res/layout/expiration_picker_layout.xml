@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <NumberPicker android:id="@+id/expiration_picker_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/expiration_picker_margin_top"
+        android:layout_marginBottom="@dimen/expiration_picker_margin_bottom"
+        android:layout_marginLeft="@dimen/expiration_picker_margin_side_big"
+        android:layout_marginRight="@dimen/expiration_picker_margin_side_small" />
+
+    <NumberPicker android:id="@+id/expiration_picker_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/expiration_picker_margin_top"
+        android:layout_marginBottom="@dimen/expiration_picker_margin_bottom"
+        android:layout_marginLeft="@dimen/expiration_picker_margin_side_small"
+        android:layout_marginRight="@dimen/expiration_picker_margin_side_big" />
+
+</LinearLayout>

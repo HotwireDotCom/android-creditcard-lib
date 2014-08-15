@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- VISA Credit Card Strings -->
+    <integer name="credit_card_len_visa">16</integer>
+    <integer name="credit_card_security_len_visa">3</integer> <!-- actually called CVV2 -->
+    <!-- InputFilter Values -->
+    <integer name="credit_card_len_visa_formatted">19</integer>
+    <integer name="credit_card_offset_visa">1</integer>
+    <integer name="credit_card_modulo_visa">5</integer>
+
+    <!-- MASTERCARD Credit Card Strings -->
+    <integer name="credit_card_len_mastercard">16</integer>
+    <integer name="credit_card_security_len_mastercard">3</integer> <!-- Actually called CVC2 -->
+    <!-- InputFilter Values -->
+    <integer name="credit_card_len_mastercard_formatted">19</integer>
+    <integer name="credit_card_offset_mastercard">1</integer>
+    <integer name="credit_card_modulo_mastercard">5</integer>
+
+    <!-- DISCOVER Credit Card Strings -->
+    <integer name="credit_card_len_discover">16</integer>
+    <integer name="credit_card_security_len_discover">3</integer> <!-- Actually called CID -->
+    <!-- InputFilter Values -->
+    <integer name="credit_card_len_discover_formatted">19</integer>
+    <integer name="credit_card_offset_discover">1</integer>
+    <integer name="credit_card_modulo_discover">5</integer>
+
+    <!-- AMERICAN EXPRESS Credit Card Strings -->
+    <integer name="credit_card_len_americanexpress">15</integer>
+    <integer name="credit_card_security_len_americanexpress">4</integer> <!-- Actually called CID -->
+    <!-- InputFilter Values -->
+    <integer name="credit_card_len_americanexpress_formatted">17</integer>
+    <integer name="credit_card_offset_americanexpress">3</integer>
+    <integer name="credit_card_modulo_americanexpress">7</integer>
+</resources>

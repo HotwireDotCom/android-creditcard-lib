@@ -7,8 +7,13 @@
 package com.hotwire.hotels.hwcclib.fields.edit;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.widget.EditText;
+
+import com.hotwire.hotels.hwcclib.R;
+
+import java.util.Date;
 
 /**
  * Created by ahobbs on 8/8/14.
@@ -47,6 +52,22 @@ public class CreditCardExpirationEditField extends EditText {
      *
      */
     private void init() {
+        setHint(R.string.expiration_field_hint_text);
+    }
 
+    /******************************
+     * BEGIN CUSTOM METHODS
+     ******************************/
+
+    /**
+     *
+     * @param expirationDate
+     */
+    public void setExpirationDate(Date expirationDate) {
+        if (expirationDate != null) {
+            String dateString = DateFormat.format(getResources().getString(R.string.expiration_field_date_format),
+                                                  expirationDate).toString();
+            setText(dateString);
+        }
     }
 }

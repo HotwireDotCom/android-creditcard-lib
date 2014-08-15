@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="credit_card_field_hint_text">Credit Card Number</string>
+
+    <string name="expiration_field_hint_text">MM/YY</string>
+    <string name="expiration_field_date_format">MM/yy</string>
+
+    <string name="security_code_field_hint_text">CVV</string>
+
+</resources>

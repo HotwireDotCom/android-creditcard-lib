@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="expiration_picker_default_title">Expiration Date</string>
+    <string name="expiration_picker_button_positive">Set</string>
+    <string name="expiration_picker_button_neutral">Cancel</string>
+
+    <string-array name="expiration_picker_display_months">
+        <item>Jan &#8212; 01</item>
+        <item>Feb &#8212; 02 </item>
+        <item>Mar &#8212; 03</item>
+        <item>Apr &#8212; 04</item>
+        <item>May &#8212; 05</item>
+        <item>Jun &#8212; 06</item>
+        <item>Jul &#8212; 07</item>
+        <item>Aug &#8212; 08</item>
+        <item>Sep &#8212; 09</item>
+        <item>Oct &#8212; 10</item>
+        <item>Nov &#8212; 11</item>
+        <item>Dec &#8212; 12</item>
+    </string-array>
+</resources>
