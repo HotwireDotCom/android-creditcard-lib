@@ -53,6 +53,7 @@ public class CreditCardExpirationEditField extends EditText {
      */
     private void init() {
         setHint(R.string.expiration_field_hint_text);
+        setSingleLine(true);
     }
 
     /******************************

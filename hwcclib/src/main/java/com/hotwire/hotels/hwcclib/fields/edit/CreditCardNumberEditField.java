@@ -51,6 +51,8 @@ public class CreditCardNumberEditField extends EditText {
         init();
     }
 
+
+
     /**
      *
      */
@@ -61,7 +63,10 @@ public class CreditCardNumberEditField extends EditText {
         setSingleLine(true);
         // for the Credit card field we do not want to have suggestions from keyboards
         // this makes the inputfilter very hard to deal with
-        setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        setRawInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD |
+                        InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
+                        InputType.TYPE_CLASS_NUMBER);
+
         setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.compound_drawable_padding_default));
         setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_credit_card_generic),
                 null,

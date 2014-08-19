@@ -83,6 +83,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        // Initialize NumberPicker backing data
         if (mDisplayMonths == null) {
             mDisplayMonths = getResources().getStringArray(R.array.expiration_picker_display_months);
         }
@@ -105,13 +106,20 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
             mYearPickerValue = getValueFromDate(dateMs, Calendar.YEAR);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        // Inflate the view to be used in the AlertDialog
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate(R.layout.expiration_picker_layout, null);
 
+        // Setup each of the NumberPickers to display the correct values
         mNumberPickerMonth = getNumberPickerView(v, R.id.expiration_picker_month, mMonthPickerValue, mDisplayMonths);
         mNumberPickerYear = getNumberPickerView(v, R.id.expiration_picker_year, mYearPickerValue, mDisplayYears);
 
+        // Setup scroll listeners to store the values scrolled to by each NumberPicker
+        mNumberPickerMonth.setOnScrollListener(getMonthOnScrollListener());
+        mNumberPickerYear.setOnScrollListener(getYearOnScrollListener());
+
+        // Create the Dialog builder, and build the dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(mTitleResource)
                .setView(v)
                .setPositiveButton(R.string.expiration_picker_button_positive, getPositiveClickListener())
@@ -180,6 +188,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
         numberPicker.setMaxValue(displayValues.length - 1);
         numberPicker.setDisplayedValues(displayValues);
         numberPicker.setValue(currentValue);
+        // prevent the display values from being editable
         numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         numberPicker.setWrapSelectorWheel(false);
 
@@ -281,6 +290,46 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
         };
 
         return listener;
+    }
+
+    /**
+     *
+     *
+     * @return
+     */
+    private NumberPicker.OnScrollListener getMonthOnScrollListener() {
+        return new NumberPicker.OnScrollListener() {
+            @Override
+            public void onScrollStateChange(NumberPicker view, int scrollState) {
+                switch (scrollState) {
+                    case SCROLL_STATE_IDLE:
+                        mMonthPickerValue = view.getValue();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+    }
+
+    /**
+     *
+     *
+     * @return
+     */
+    private NumberPicker.OnScrollListener getYearOnScrollListener() {
+        return new NumberPicker.OnScrollListener() {
+            @Override
+            public void onScrollStateChange(NumberPicker view, int scrollState) {
+                switch (scrollState) {
+                    case SCROLL_STATE_IDLE:
+                        mYearPickerValue = view.getValue();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
     }
 
     /**
