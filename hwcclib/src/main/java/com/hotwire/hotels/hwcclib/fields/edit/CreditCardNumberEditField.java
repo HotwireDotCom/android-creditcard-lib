@@ -7,8 +7,8 @@
 package com.hotwire.hotels.hwcclib.fields.edit;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -18,19 +18,18 @@ import android.widget.EditText;
 
 import com.hotwire.hotels.hwcclib.CreditCardUtilities;
 import com.hotwire.hotels.hwcclib.R;
-import com.hotwire.hotels.hwcclib.filter.CreditCardInputFilter;
+import com.hotwire.hotels.hwcclib.animation.drawable.AnimatedScaleDrawable;
 
 /**
  * Created by ahobbs on 8/8/14.
  */
 public class CreditCardNumberEditField extends EditText implements TextWatcher {
-    public static final String TAG = "CreditCardNumberField";
+    public static final String TAG = CreditCardNumberEditField.class.getSimpleName();
 
     public static final int NO_RES_ID = -1;
 
-    private static final int COMPOUND_DRAWABLE_LEFT = 0;
-
     private final Context mContext;
+    private AnimatedScaleDrawable mAnimatedScaleDrawable;
 
     /**
      *
@@ -72,24 +71,15 @@ public class CreditCardNumberEditField extends EditText implements TextWatcher {
         setSingleLine(true);
         // for the Credit card field we do not want to have suggestions from keyboards
         // this makes the inputfilter very hard to deal with
-        setRawInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD |
-                        InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
-                        InputType.TYPE_CLASS_NUMBER);
+        setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_CLASS_NUMBER);
 
+        initializeAnimatedScaleDrawable(mContext.getResources().getDrawable(R.drawable.ic_credit_card_generic));
         setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.compound_drawable_padding_default));
-        setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_credit_card_generic),
-                null,
-                null,
-                null);
+        setCompoundDrawablesWithIntrinsicBounds(mAnimatedScaleDrawable,
+                                                null,
+                                                null,
+                                                null);
         addTextChangedListener(this);
-
-        // CODE BELOW THIS LINE NEEDS TO BE DELETED, THIS IS ONLY FOR INITIAL TESTING
-        int cardOffset = getResources().getInteger(R.integer.credit_card_offset_visa);
-        int cardModulo = getResources().getInteger(R.integer.credit_card_modulo_visa);
-        int cardFieldLen = getResources().getInteger(R.integer.credit_card_len_visa_formatted);
-
-        InputFilter filter = new CreditCardInputFilter(cardOffset, cardModulo, cardFieldLen);
-        setFilters(new InputFilter[] {filter});
     }
 
     /**
@@ -147,6 +137,17 @@ public class CreditCardNumberEditField extends EditText implements TextWatcher {
 
     /**
      *
+     * @param newCardTypeResId
+     */
+    public void setCardTypeForField(int newCardTypeResId) {
+        if (newCardTypeResId != NO_RES_ID) {
+            Drawable newFieldDrawable = mContext.getResources().getDrawable(newCardTypeResId);
+            mAnimatedScaleDrawable.startDrawableTransition(newFieldDrawable);
+        }
+    }
+
+    /**
+     *
      */
     public void clearErrors() {
         setError(null);
@@ -169,5 +170,14 @@ public class CreditCardNumberEditField extends EditText implements TextWatcher {
             setError(mContext.getString(errorMessageResId));
         }
         setTextColor(mContext.getResources().getColor(R.color.field_text_color_error));
+    }
+
+    /**
+     *
+     */
+    private void initializeAnimatedScaleDrawable(Drawable drawable) {
+        mAnimatedScaleDrawable = new AnimatedScaleDrawable(drawable);
+        int duration = mContext.getResources().getInteger(R.integer.credit_card_field_animation_duration_ms);
+        mAnimatedScaleDrawable.setDuration(duration);
     }
 }

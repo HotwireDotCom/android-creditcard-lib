@@ -19,7 +19,7 @@ import java.util.Date;
  * Created by ahobbs on 8/8/14.
  */
 public class CreditCardExpirationEditField extends EditText {
-    public static String TAG = "CreditCardExpirationEditField";
+    public static String TAG = CreditCardExpirationEditField.class.getSimpleName();
 
     public static final int NO_RES_ID = -1;
 

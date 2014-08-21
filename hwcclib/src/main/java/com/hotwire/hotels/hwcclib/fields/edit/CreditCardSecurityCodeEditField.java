@@ -7,6 +7,7 @@
 package com.hotwire.hotels.hwcclib.fields.edit;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
@@ -14,16 +15,19 @@ import android.view.Gravity;
 import android.widget.EditText;
 
 import com.hotwire.hotels.hwcclib.R;
+import com.hotwire.hotels.hwcclib.animation.drawable.AnimatedScaleDrawable;
 
 /**
  * Created by ahobbs on 8/8/14.
  */
 public class CreditCardSecurityCodeEditField extends EditText {
-    public static final String TAG = "CreditCardSecurityCodeEditField";
+    public static final String TAG = CreditCardSecurityCodeEditField.class.getSimpleName();
 
     public static final int NO_RES_ID = -1;
 
     private final Context mContext;
+    private AnimatedScaleDrawable mAnimatedScaleDrawable;
+
     /**
      *
      * @param context
@@ -61,18 +65,36 @@ public class CreditCardSecurityCodeEditField extends EditText {
         setHint(R.string.security_code_field_hint_text);
         setHintTextColor(mContext.getResources().getColor(R.color.field_text_color_hint_default));
         setGravity(Gravity.BOTTOM);
-        setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        /*
+         * This InputType combination will give us the number keypad and will allow, in conjunction with the
+         * transformation method, the user to input a password but be shown the digit currently being entered before
+         * masking like a password
+         */
+        setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         setSingleLine(true); // must set single line before transformation method
-        setTransformationMethod(new PasswordTransformationMethod());
-        setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_security_code_disabled),
-                null,
-                null,
-                null);
+        setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+        initializeAnimatedScaleDrawable(mContext.getResources().getDrawable(R.drawable.ic_security_code_disabled));
+        setCompoundDrawablesWithIntrinsicBounds(mAnimatedScaleDrawable,
+                                                null,
+                                                null,
+                                                null);
     }
 
     /******************************
      * BEGIN CUSTOM METHODS
      ******************************/
+
+    /**
+     *
+     * @param newSecurityCodeResId
+     */
+    public void setCardTypeForField(int newSecurityCodeResId) {
+        if (newSecurityCodeResId != NO_RES_ID) {
+            Drawable newFieldDrawable = mContext.getResources().getDrawable(newSecurityCodeResId);
+            mAnimatedScaleDrawable.startDrawableTransition(newFieldDrawable);
+        }
+    }
 
     /**
      *
@@ -98,6 +120,15 @@ public class CreditCardSecurityCodeEditField extends EditText {
             setError(mContext.getString(errorMessageResId));
         }
         setTextColor(mContext.getResources().getColor(R.color.field_text_color_error));
+    }
+
+    /**
+     *
+     */
+    private void initializeAnimatedScaleDrawable(Drawable drawable) {
+        mAnimatedScaleDrawable = new AnimatedScaleDrawable(drawable);
+        int duration = mContext.getResources().getInteger(R.integer.credit_card_field_animation_duration_ms);
+        mAnimatedScaleDrawable.setDuration(duration);
     }
 }
 

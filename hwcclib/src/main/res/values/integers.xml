@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="credit_card_field_animation_duration_ms">150</integer>
+</resources>

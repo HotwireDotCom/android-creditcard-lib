@@ -16,7 +16,7 @@ import com.hotwire.hotels.hwcclib.CreditCardUtilities;
  * Created by ahobbs on 8/8/14.
  */
 public class CreditCardInputFilter extends InputFilter.LengthFilter {
-    public static final String TAG = "CreditCardInputFilter";
+    public static final String TAG = CreditCardInputFilter.class.getSimpleName();
 
     private static final int INVALID_THRESHOLD = 0;
     private static final int DEFAULT_OFFSET = 0;
@@ -93,59 +93,4 @@ public class CreditCardInputFilter extends InputFilter.LengthFilter {
         // otherwise return the length filter
         return sequence;
     }
-
-    /***********************************************************************************
-     * BEGIN DO NOT DELETE JUST IN CASE WE GO WITH MASK IMPLEMENTATION VS OFFSET/MODULO
-     ***********************************************************************************/
-
-//    private char[] mCreditCardNumberMask;
-//    private int mCreditCardLength;
-//
-//    /**
-//     *
-//     *
-//     * @param creditCardNumberMask
-//     */
-//    public CreditCardInputFilter(String creditCardNumberMask, int creditCardLength) {
-//        super(creditCardLength);
-//        if (creditCardNumberMask != null && !creditCardNumberMask.isEmpty()) {
-//            mCreditCardNumberMask = creditCardNumberMask.toCharArray();
-//        }
-//        else {
-//            throw new InvalidParameterException(INVALID_PARAMETER_ERROR);
-//        }
-//    }
-//
-//    @Override
-//    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-//        CharSequence sequence = super.filter(source, start, end, dest, dstart, dend);
-//        // if sequence is null that means we are within our limits
-//        Log.d(TAG, "Source: " + source + " | start: " + start + "   | end: " + end + "   | range: " +
-//             (end - start) + "   | length: " + source.length());
-//        Log.d(TAG, "  dest: " + dest + "   | dstart: " + dstart + " | dend: " + dend + " | range: " +
-//             (dend - dstart) + " | length: " + dest.length());
-//
-//        // if sequence is null, we have not hit the filter to limit length, apply credit card mask logic
-//        if (sequence == null) {
-//            StringBuilder builder = new StringBuilder();
-//            if (end - start > 0) {
-//                for (int i = start; i < end; i++) {
-//                    if (!isValidChar(source.charAt(i))) {
-//                        return "";
-//                    } else if (Character.isWhitespace(mCreditCardNumberMask[dest.length() + i])) {
-//                        builder.append(" ");
-//                    }
-//                    builder.append(source.charAt(i));
-//                }
-//                return builder.toString();
-//            }
-//        }
-//
-//        // otherwise return the length filter
-//        return sequence;
-//    }
-
-    /***********************************************************************************
-     * END DO NOT DELETE JUST IN CASE WE GO WITH MASK IMPLEMENTATION VS OFFSET/MODULO
-     ***********************************************************************************/
 }
