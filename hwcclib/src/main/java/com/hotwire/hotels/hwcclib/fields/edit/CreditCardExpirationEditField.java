@@ -19,7 +19,11 @@ import java.util.Date;
  * Created by ahobbs on 8/8/14.
  */
 public class CreditCardExpirationEditField extends EditText {
+    public static String TAG = "CreditCardExpirationEditField";
 
+    public static final int NO_RES_ID = -1;
+
+    private final Context mContext;
     /**
      *
      * @param context
@@ -45,6 +49,7 @@ public class CreditCardExpirationEditField extends EditText {
      */
     public CreditCardExpirationEditField(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mContext = context;
         init();
     }
 
@@ -53,6 +58,7 @@ public class CreditCardExpirationEditField extends EditText {
      */
     private void init() {
         setHint(R.string.expiration_field_hint_text);
+        setHintTextColor(mContext.getResources().getColor(R.color.field_text_color_hint_default));
         setSingleLine(true);
     }
 
@@ -70,5 +76,31 @@ public class CreditCardExpirationEditField extends EditText {
                                                   expirationDate).toString();
             setText(dateString);
         }
+    }
+
+    /**
+     *
+     */
+    public void clearErrors() {
+        setError(null);
+        setTextColor(mContext.getResources().getColor(R.color.field_text_color_default));
+    }
+
+    /**
+     *
+     */
+    public void setErrorState() {
+        setErrorState(NO_RES_ID);
+    }
+
+    /**
+     *
+     * @param errorMessageResId
+     */
+    public void setErrorState(int errorMessageResId) {
+        if (mContext != null && errorMessageResId != NO_RES_ID) {
+            setError(mContext.getString(errorMessageResId));
+        }
+        setTextColor(mContext.getResources().getColor(R.color.field_text_color_error));
     }
 }

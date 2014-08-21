@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="expiration_picker_default_title">Expiration Date</string>
+    <string name="expiration_picker_default_title">Expiration date</string>
     <string name="expiration_picker_button_positive">Set</string>
     <string name="expiration_picker_button_neutral">Cancel</string>
 

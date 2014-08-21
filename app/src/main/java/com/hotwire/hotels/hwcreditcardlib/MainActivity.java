@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.hotwire.hotels.hwcclib.dialog.date.ExpirationPickerDialogFragment;
-
 /**
  *
  */
@@ -38,9 +36,6 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            // date picker dialog stuff here should be removed
-            ExpirationPickerDialogFragment dialog = ExpirationPickerDialogFragment.newInstance();
-            dialog.show(getFragmentManager(), ExpirationPickerDialogFragment.TAG);
             return true;
         }
         return super.onOptionsItemSelected(item);

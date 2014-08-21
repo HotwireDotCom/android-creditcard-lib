@@ -10,6 +10,8 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
 
+import com.hotwire.hotels.hwcclib.CreditCardUtilities;
+
 /**
  * Created by ahobbs on 8/8/14.
  */
@@ -58,8 +60,19 @@ public class CreditCardInputFilter extends InputFilter.LengthFilter {
             StringBuilder builder = new StringBuilder();
             // used for keeping track of how many spaces were added when a number is pasted to the field
             int insertedFormatSpaces = 0;
+
+            // Determining the length here will take into consideration, when the string has been modified by the
+            // text watcher in the CreditCardNumberEditField to backspace the formatting white space characters
+            // and allow for the inputfilter to reformat the string properly
+            int length = dest.length();
+            if (source.length() ==
+                    dest.toString().replaceAll(CreditCardUtilities.REGEX_WHITESPACE,
+                                               CreditCardUtilities.REGEX_WHITESPACE).length()) {
+                length = 0;
+            }
+            Log.v(TAG, "length: " + length);
             for (int i = start; i < end; i++) {
-                int check = dest.length() + i + mOffset + insertedFormatSpaces;
+                int check = length + i + mOffset + insertedFormatSpaces;
                 int modCheck = check % mMod;
                 Log.v(TAG, "i: " + i + " | added: " + insertedFormatSpaces + " | check: " + check);
 

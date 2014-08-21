@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="field_text_color_default">#414141</color>
+    <color name="field_text_color_hint_default">#d1d1d1</color>
+    <color name="field_text_color_error">#FF0000</color>
+</resources>
