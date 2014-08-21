@@ -40,6 +40,9 @@ public final class CreditCardUtilities {
     public static final String DISCOVER_CARD_REGEX = "^6(?:011|5[0-9]{2})[0-9]{12}$";
     public static final String DISCOVER_CARD_TYPE_REGEX = "^6(?:011|5[0-9]{2})$";
 
+    public static final String EMPTY_STRING = "";
+    public static final String REGEX_WHITESPACE = "\\s";
+
     private CreditCardUtilities() {
 
     }
@@ -155,5 +158,20 @@ public final class CreditCardUtilities {
             doubled = !doubled;
         }
         return (sum % 10) == 0;
+    }
+
+    /**
+     * Strips a string of all white space and replaces with an empty string
+     *
+     * @param original
+     * @return
+     */
+    public static String getCleanString(String original) {
+        if (original == null || original.isEmpty()) {
+            return EMPTY_STRING;
+        }
+        String sanitized = original.trim();
+
+        return sanitized.replaceAll(REGEX_WHITESPACE, EMPTY_STRING);
     }
 }

@@ -125,8 +125,7 @@ public class CreditCardNumberEditField extends EditText implements TextWatcher {
         if (s.length() > 0) {
             if (Character.isWhitespace(s.charAt(s.length() - 1))) {
                 String goodString = new String(s.toString().trim());
-                goodString = goodString.replaceAll(CreditCardUtilities.REGEX_WHITESPACE,
-                                                   CreditCardUtilities.EMPTY_STRING);
+                goodString = CreditCardUtilities.getCleanString(goodString);
                 Log.d(TAG, "Replacing: " + s + " with: " + goodString);
                 s.replace(0, s.length(), goodString, 0, goodString.length());
             }
@@ -136,6 +135,15 @@ public class CreditCardNumberEditField extends EditText implements TextWatcher {
     /******************************
      * BEGIN CUSTOM METHODS
      ******************************/
+
+    /**
+     *
+     * @return
+     */
+    public String getRawCreditCardNumber() {
+        String currentText = getText().toString();
+        return CreditCardUtilities.getCleanString(currentText);
+    }
 
     /**
      *

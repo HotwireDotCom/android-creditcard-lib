@@ -65,9 +65,8 @@ public class CreditCardInputFilter extends InputFilter.LengthFilter {
             // text watcher in the CreditCardNumberEditField to backspace the formatting white space characters
             // and allow for the inputfilter to reformat the string properly
             int length = dest.length();
-            if (source.length() ==
-                    dest.toString().replaceAll(CreditCardUtilities.REGEX_WHITESPACE,
-                                               CreditCardUtilities.REGEX_WHITESPACE).length()) {
+            String cleanDest = CreditCardUtilities.getCleanString(dest.toString());
+            if (source.length() == cleanDest.length()) {
                 length = 0;
             }
             Log.v(TAG, "length: " + length);
