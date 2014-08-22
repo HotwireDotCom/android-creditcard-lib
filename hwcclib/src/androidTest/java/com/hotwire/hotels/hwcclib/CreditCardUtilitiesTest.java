@@ -64,4 +64,26 @@ public class CreditCardUtilitiesTest extends TestCase {
         assertFalse(CreditCardUtilities.isValidCreditCard("3088647942200780"));
     }
 
+    public void testGetCleanString() {
+        // test a formatted credit card like string
+        String cleanString = CreditCardUtilities.getCleanString("1111 1111 1111 1111");
+
+        // there should be no whitespace returned
+        for (char c : cleanString.toCharArray()) {
+            assertFalse(Character.isWhitespace(c));
+        }
+
+        // test a formatted credit card like string with trailing and begining spaces
+        cleanString = CreditCardUtilities.getCleanString(" 5555 5555 5555 5555 ");
+        for (char c : cleanString.toCharArray()) {
+            assertFalse(Character.isWhitespace(c));
+        }
+
+        // all null and empty strings should return an empty string
+        cleanString = CreditCardUtilities.getCleanString(null);
+        assertTrue(cleanString.isEmpty());
+
+        cleanString = CreditCardUtilities.getCleanString("");
+        assertTrue(cleanString.isEmpty());
+    }
 }
