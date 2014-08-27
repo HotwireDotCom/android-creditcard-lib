@@ -9,6 +9,7 @@ package com.hotwire.hotels.hwcclib.fields.edit;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import com.hotwire.hotels.hwcclib.CreditCardUtilities;
 import com.hotwire.hotels.hwcclib.R;
 import com.hotwire.hotels.hwcclib.animation.drawable.AnimatedScaleDrawable;
+import com.hotwire.hotels.hwcclib.filter.CreditCardInputFilter;
 
 /**
  * Created by ahobbs on 8/8/14.
@@ -30,6 +32,8 @@ public class CreditCardNumberEditField extends EditText implements TextWatcher {
 
     private final Context mContext;
     private AnimatedScaleDrawable mAnimatedScaleDrawable;
+
+
 
     /**
      *
@@ -174,6 +178,19 @@ public class CreditCardNumberEditField extends EditText implements TextWatcher {
 
     /**
      *
+     * @param cardIssuer
+     */
+    public void updateCardType(CreditCardUtilities.CardIssuer cardIssuer) {
+        InputFilter creditCardNumFilter = new CreditCardInputFilter(cardIssuer.getOffset(),
+                cardIssuer.getModulo(),
+                cardIssuer.getFormattedLength());
+        setFilters(new InputFilter[]{creditCardNumFilter});
+        setCardTypeForField(cardIssuer.getIconResourceId());
+    }
+
+    /**
+     *
+     * @param drawable
      */
     private void initializeAnimatedScaleDrawable(Drawable drawable) {
         mAnimatedScaleDrawable = new AnimatedScaleDrawable(drawable);

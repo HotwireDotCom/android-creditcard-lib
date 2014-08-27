@@ -9,7 +9,24 @@
     tools:context=".MainActivity">
 
     <com.hotwire.hotels.hwcclib.fields.CreditCardModule
+        android:id="@+id/credit_card_module"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/credit_card_module"
+        android:layout_margin="15dp"
+        android:text="Save"/>
+
+    <TextView
+        android:id="@+id/status_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:layout_below="@id/save_button"
+        android:text="Status: Incomplete."/>
 
 </RelativeLayout>

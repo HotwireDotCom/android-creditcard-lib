@@ -60,6 +60,7 @@ public class CreditCardExpirationEditField extends EditText {
         setHint(R.string.expiration_field_hint_text);
         setHintTextColor(mContext.getResources().getColor(R.color.field_text_color_hint_default));
         setSingleLine(true);
+        setKeyListener(null);
     }
 
     /******************************

@@ -24,8 +24,15 @@ import java.util.regex.Pattern;
  */
 public final class CreditCardUtilities {
 
+
+    public static final int CARD_FORMATTED_LENGTH_19 = 19;
+    public static final int CARD_FORMATTED_LENGTH_17 = 17;
     public static final int SECURITY_LENGTH_3 = 3;
     public static final int SECURITY_LENGTH_4 = 4;
+    public static final int OFFSET_1 = 1;
+    public static final int OFFSET_3 = 3;
+    public static final int MODULO_5 = 5;
+    public static final int MODULO_7 = 7;
     public static final int MIN_LENGTH_FOR_TYPE = 4;
 
     public static final String VISA_CARD_REGEX = "^4[0-9]{15}?";
@@ -49,37 +56,94 @@ public final class CreditCardUtilities {
     /**
      * An enum containing all the supported cards and it's corresponding rules.
      * The rules are laid out in the following order
-     * regex for the card
-     * partial regex for determining the card issuer based on the first 4 characters entered
+     * mRegex for the card
+     * partial mRegex for determining the card issuer based on the first 4 characters entered
      * the security code length
      */
     public static enum CardIssuer {
-        VISA(VISA_CARD_REGEX, VISA_CARD_TYPE_REGEX, SECURITY_LENGTH_3),
-        MASTERCARD(MASTERCARD_CARD_REGEX, MASTERCARD_CARD_TYPE_REGEX, SECURITY_LENGTH_3),
-        AMERICANEXPRESS(AMERICANEXPRESS_CARD_REGEX, AMERICANEXPRESS_CARD_TYPE_REGEX, SECURITY_LENGTH_4),
-        DISCOVER(DISCOVER_CARD_REGEX, DISCOVER_CARD_TYPE_REGEX, SECURITY_LENGTH_3),
-        INVALID("", "", 3);
 
-        private String regexType;
-        private String regex;
-        private int securityLength;
+        VISA(VISA_CARD_REGEX,
+                VISA_CARD_TYPE_REGEX,
+                CARD_FORMATTED_LENGTH_19,
+                SECURITY_LENGTH_3,
+                OFFSET_1,
+                MODULO_5,
+                R.drawable.ic_credit_card_visa),
+        MASTERCARD(MASTERCARD_CARD_REGEX,
+                MASTERCARD_CARD_TYPE_REGEX,
+                CARD_FORMATTED_LENGTH_19,
+                SECURITY_LENGTH_3,
+                OFFSET_1,
+                MODULO_5,
+                R.drawable.ic_credit_card_mastercard),
+        AMERICANEXPRESS(AMERICANEXPRESS_CARD_REGEX,
+                AMERICANEXPRESS_CARD_TYPE_REGEX,
+                CARD_FORMATTED_LENGTH_17,
+                SECURITY_LENGTH_4,
+                OFFSET_3,
+                MODULO_7,
+                R.drawable.ic_credit_card_americanexpress),
+        DISCOVER(DISCOVER_CARD_REGEX,
+                DISCOVER_CARD_TYPE_REGEX,
+                CARD_FORMATTED_LENGTH_19,
+                SECURITY_LENGTH_3,
+                OFFSET_3,
+                MODULO_7,
+                R.drawable.ic_credit_card_discover),
+        INVALID(EMPTY_STRING,
+                EMPTY_STRING,
+                CARD_FORMATTED_LENGTH_19,
+                SECURITY_LENGTH_3,
+                OFFSET_1,
+                MODULO_5,
+                R.drawable.ic_credit_card_generic);
 
-        private CardIssuer(String regex, String regexType, int length) {
-            this.regex = regex;
-            this.regexType = regexType;
-            this.securityLength = length;
-        }
+        private String mRegex;
+        private String mRegexType;
+        private int mFormattedLength;
+        private int mSecurityLength;
+        private int mOffset;
+        private int mModulo;
+        private int mIconResourceId;
+        private int mSecCodeResourceId;
 
-        public String getRegexType() {
-            return regexType;
+        private CardIssuer(String regex, String regexType, int formattedLength, int securityLength, int offset, int modulo,
+                           int iconResourceId) {
+            this.mRegex = regex;
+            this.mRegexType = regexType;
+            this.mFormattedLength = formattedLength;
+            this.mSecurityLength = securityLength;
+            this.mOffset = offset;
+            this.mModulo = modulo;
+            this.mIconResourceId = iconResourceId;
         }
 
         public String getRegex() {
-            return regex;
+            return mRegex;
+        }
+
+        public String getRegexType() {
+            return mRegexType;
+        }
+
+        public int getFormattedLength() {
+            return mFormattedLength;
         }
 
         public int getSecurityLength() {
-            return securityLength;
+            return mSecurityLength;
+        }
+
+        public int getOffset() {
+            return mOffset;
+        }
+
+        public int getModulo() {
+            return mModulo;
+        }
+
+        public int getIconResourceId() {
+            return mIconResourceId;
         }
     }
 
@@ -95,10 +159,8 @@ public final class CreditCardUtilities {
         }
 
         for (CardIssuer cardIssuer: CardIssuer.values()) {
-
             Pattern pattern = Pattern.compile(cardIssuer.getRegexType());
-            Matcher matcher = pattern.matcher(inputNumber.substring(0,
-                    MIN_LENGTH_FOR_TYPE));
+            Matcher matcher = pattern.matcher(inputNumber.substring(0, MIN_LENGTH_FOR_TYPE));
 
             if (matcher.matches()) {
                 return cardIssuer;
@@ -125,15 +187,6 @@ public final class CreditCardUtilities {
 
         return matcher.matches() && isValidUsingLuhn(inputNumber);
 
-    }
-
-    /**
-     *
-     * @param cardIssuer - the enum value representing the card issuer
-     * @return the length of the security code
-     */
-    public static int lengthOfSecurityCode(CardIssuer cardIssuer) {
-        return cardIssuer.getSecurityLength();
     }
 
     /**

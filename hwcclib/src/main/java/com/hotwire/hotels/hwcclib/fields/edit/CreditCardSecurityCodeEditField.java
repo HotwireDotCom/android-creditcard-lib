@@ -8,12 +8,14 @@ package com.hotwire.hotels.hwcclib.fields.edit;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.EditText;
 
+import com.hotwire.hotels.hwcclib.CreditCardUtilities;
 import com.hotwire.hotels.hwcclib.R;
 import com.hotwire.hotels.hwcclib.animation.drawable.AnimatedScaleDrawable;
 
@@ -124,6 +126,28 @@ public class CreditCardSecurityCodeEditField extends EditText {
 
     /**
      *
+     * @param cardIssuer
+     */
+    public void updateCardType(CreditCardUtilities.CardIssuer cardIssuer) {
+        int secResId;
+        if (cardIssuer == CreditCardUtilities.CardIssuer.INVALID) {
+            secResId = R.drawable.ic_security_code_disabled;
+        }
+        else if (cardIssuer.getSecurityLength() == CreditCardUtilities.SECURITY_LENGTH_3) {
+            secResId = R.drawable.ic_security_code_3;
+        }
+        else {
+            secResId = R.drawable.ic_security_code_4;
+        }
+        setCardTypeForField(secResId);
+
+        InputFilter secCodeFilter = new InputFilter.LengthFilter(cardIssuer.getSecurityLength());
+        setFilters(new InputFilter[]{secCodeFilter});
+    }
+
+    /**
+     *
+     * @param drawable
      */
     private void initializeAnimatedScaleDrawable(Drawable drawable) {
         mAnimatedScaleDrawable = new AnimatedScaleDrawable(drawable);

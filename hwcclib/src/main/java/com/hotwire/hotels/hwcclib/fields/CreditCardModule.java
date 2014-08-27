@@ -7,11 +7,14 @@
 package com.hotwire.hotels.hwcclib.fields;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.hotwire.hotels.hwcclib.CreditCardController;
 import com.hotwire.hotels.hwcclib.R;
 import com.hotwire.hotels.hwcclib.fields.edit.CreditCardExpirationEditField;
 import com.hotwire.hotels.hwcclib.fields.edit.CreditCardNumberEditField;
@@ -29,6 +32,7 @@ public class CreditCardModule extends LinearLayout {
     private CreditCardNumberEditField mCreditCardNumber;
     private CreditCardExpirationEditField mCreditCardExpiration;
     private CreditCardSecurityCodeEditField mCreditCardSecurityCode;
+    private CreditCardController mCreditCardController;
 
     /**
      *
@@ -72,6 +76,8 @@ public class CreditCardModule extends LinearLayout {
         mCreditCardExpiration = new CreditCardExpirationEditField(context);
         mCreditCardSecurityCode = new CreditCardSecurityCodeEditField(context);
 
+        mCreditCardController = new CreditCardController(context, mCreditCardNumber,
+                mCreditCardExpiration, mCreditCardSecurityCode);
 
         addView(mCreditCardNumber, getDefaultLayoutParams());
         mHorizontalLayout.addView(mCreditCardExpiration, getWeightedLayoutParams());
@@ -152,5 +158,17 @@ public class CreditCardModule extends LinearLayout {
                                                             DEFAULT_CHILD_WEIGHT);
 
         return params;
+    }
+
+    public CreditCardController getCreditCardController() {
+        return mCreditCardController;
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        mCreditCardController.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onRestoreSavedInstanceState(Bundle savedInstanceState) {
+        mCreditCardController.onRestoreSavedInstanceState(savedInstanceState);
     }
 }

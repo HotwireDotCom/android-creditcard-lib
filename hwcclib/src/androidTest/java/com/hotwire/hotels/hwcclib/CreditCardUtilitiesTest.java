@@ -34,13 +34,6 @@ public class CreditCardUtilitiesTest extends TestCase {
 
     }
 
-    public void testLengthOfSecurityCode() {
-        assertEquals(CreditCardUtilities.lengthOfSecurityCode(CreditCardUtilities.CardIssuer.AMERICANEXPRESS), 4);
-        assertEquals(CreditCardUtilities.lengthOfSecurityCode(CreditCardUtilities.CardIssuer.DISCOVER), 3);
-        assertEquals(CreditCardUtilities.lengthOfSecurityCode(CreditCardUtilities.CardIssuer.VISA), 3);
-        assertEquals(CreditCardUtilities.lengthOfSecurityCode(CreditCardUtilities.CardIssuer.MASTERCARD), 3);
-    }
-
     public void testIsValidUsingLuhn() {
         //valid JCB
         assertTrue(CreditCardUtilities.isValidUsingLuhn("3088647942200780"));

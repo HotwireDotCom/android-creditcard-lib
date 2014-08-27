@@ -106,6 +106,8 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
             mYearPickerValue = getValueFromDate(dateMs, Calendar.YEAR);
         }
 
+        setCancelable(false);
+
         // Inflate the view to be used in the AlertDialog
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate(R.layout.expiration_picker_layout, null);
@@ -114,9 +116,9 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
         mNumberPickerMonth = getNumberPickerView(v, R.id.expiration_picker_month, mMonthPickerValue, mDisplayMonths);
         mNumberPickerYear = getNumberPickerView(v, R.id.expiration_picker_year, mYearPickerValue, mDisplayYears);
 
-        // Setup scroll listeners to store the values scrolled to by each NumberPicker
-        mNumberPickerMonth.setOnScrollListener(getMonthOnScrollListener());
-        mNumberPickerYear.setOnScrollListener(getYearOnScrollListener());
+        // Setup value changed listeners to store the values scrolled to by each NumberPicker
+        mNumberPickerMonth.setOnValueChangedListener(getMonthOnValueChangeListener());
+        mNumberPickerYear.setOnValueChangedListener(getYearOnValueChangeListener());
 
         // Create the Dialog builder, and build the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -161,6 +163,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
      *
      * @param listener
      */
+    // TODO get rid of this. No way to access the object and add more listeners.
     public void addDatePickerListener(ExpirationPickerListener listener) {
         if (mExpirationPickerListeners == null) {
             mExpirationPickerListeners = new ArrayList<ExpirationPickerListener>();
@@ -294,40 +297,26 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
 
     /**
      *
-     *
      * @return
      */
-    private NumberPicker.OnScrollListener getMonthOnScrollListener() {
-        return new NumberPicker.OnScrollListener() {
+    private NumberPicker.OnValueChangeListener getMonthOnValueChangeListener() {
+        return new NumberPicker.OnValueChangeListener() {
             @Override
-            public void onScrollStateChange(NumberPicker view, int scrollState) {
-                switch (scrollState) {
-                    case SCROLL_STATE_IDLE:
-                        mMonthPickerValue = view.getValue();
-                        break;
-                    default:
-                        break;
-                }
+            public void onValueChange(NumberPicker view, int i, int i2) {
+                mMonthPickerValue = view.getValue();
             }
         };
     }
 
     /**
      *
-     *
      * @return
      */
-    private NumberPicker.OnScrollListener getYearOnScrollListener() {
-        return new NumberPicker.OnScrollListener() {
+    private NumberPicker.OnValueChangeListener getYearOnValueChangeListener() {
+        return new NumberPicker.OnValueChangeListener() {
             @Override
-            public void onScrollStateChange(NumberPicker view, int scrollState) {
-                switch (scrollState) {
-                    case SCROLL_STATE_IDLE:
-                        mYearPickerValue = view.getValue();
-                        break;
-                    default:
-                        break;
-                }
+            public void onValueChange(NumberPicker view, int i, int i2) {
+                mYearPickerValue = view.getValue();
             }
         };
     }
