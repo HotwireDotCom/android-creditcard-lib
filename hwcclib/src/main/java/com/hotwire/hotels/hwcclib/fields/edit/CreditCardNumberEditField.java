@@ -71,9 +71,13 @@ public class CreditCardNumberEditField extends EditText {
         setHintTextColor(mContext.getResources().getColor(R.color.field_text_color_hint_default));
         setGravity(Gravity.BOTTOM);
         setSingleLine(true);
-        // for the Credit card field we do not want to have suggestions from keyboards
-        // this makes the inputfilter very hard to deal with
-        setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_CLASS_NUMBER);
+        /* for the Credit card field we do not want to have suggestions from keyboards
+         * this makes the inputfilter very hard to deal with. Also attempt to restrict the keyboard to
+         * only be the number pad for credit card entry.
+         */
+        setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
+                     InputType.TYPE_CLASS_NUMBER |
+                     InputType.TYPE_NUMBER_VARIATION_PASSWORD);
 
         initializeAnimatedScaleDrawable(mContext.getResources().getDrawable(R.drawable.ic_credit_card_generic));
         setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.compound_drawable_padding_default));

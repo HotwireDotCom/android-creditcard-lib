@@ -72,7 +72,9 @@ public class CreditCardSecurityCodeEditField extends EditText {
          * transformation method, the user to input a password but be shown the digit currently being entered before
          * masking like a password
          */
-        setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
+                        InputType.TYPE_CLASS_NUMBER |
+                        InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         setSingleLine(true); // must set single line before transformation method
         setTransformationMethod(PasswordTransformationMethod.getInstance());
 
