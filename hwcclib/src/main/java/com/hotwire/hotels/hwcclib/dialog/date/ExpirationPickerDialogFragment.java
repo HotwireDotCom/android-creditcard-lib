@@ -33,7 +33,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     private static final String MONTH_PICKER_KEY = "com.hotwire.hotels.hwcclib.dialog.date.month_picker_key";
     private static final String YEAR_PICKER_KEY = "com.hotwire.hotels.hwcclib.dialog.date.year_picker_key";
 
-    private List<ExpirationPickerListener> mExpirationPickerListeners;
+    private ExpirationPickerListener mExpirationPickerListener;
     private NumberPicker mNumberPickerMonth;
     private NumberPicker mNumberPickerYear;
 
@@ -164,12 +164,9 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
      * @param listener
      */
     // TODO get rid of this. No way to access the object and add more listeners.
-    public void addDatePickerListener(ExpirationPickerListener listener) {
-        if (mExpirationPickerListeners == null) {
-            mExpirationPickerListeners = new ArrayList<ExpirationPickerListener>();
-        }
+    public void setDatePickerListener(ExpirationPickerListener listener) {
         if (listener != null) {
-            mExpirationPickerListeners.add(listener);
+            mExpirationPickerListener = listener;
         }
     }
 
@@ -202,22 +199,18 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
      *
      * @param selectedDate
      */
-    private void callPositiveListeners(Date selectedDate) {
-        if (mExpirationPickerListeners != null) {
-            for (ExpirationPickerListener listener : mExpirationPickerListeners) {
-                listener.onExpirationDateSelected(selectedDate);
-            }
+    private void callPositiveListener(Date selectedDate) {
+        if (mExpirationPickerListener != null) {
+            mExpirationPickerListener.onExpirationDateSelected(selectedDate);
         }
     }
 
     /**
      *
      */
-    private void callNegativeListeners() {
-        if (mExpirationPickerListeners != null) {
-            for (ExpirationPickerListener listener : mExpirationPickerListeners) {
-                listener.onDialogPickerCanceled();
-            }
+    private void callNegativeListener() {
+        if (mExpirationPickerListener != null) {
+            mExpirationPickerListener.onDialogPickerCanceled();
         }
     }
 
@@ -271,7 +264,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Date date = buildDate();
-                callPositiveListeners(date);
+                callPositiveListener(date);
                 dialog.dismiss();
             }
         };
@@ -287,7 +280,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                callNegativeListeners();
+                callNegativeListener();
                 dialog.dismiss();
             }
         };
