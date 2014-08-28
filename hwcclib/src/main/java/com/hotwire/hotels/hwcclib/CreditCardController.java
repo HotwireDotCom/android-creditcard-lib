@@ -264,8 +264,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
             FragmentTransaction fragmentTransaction = ((Activity) mContext).getFragmentManager().beginTransaction();
             ExpirationPickerDialogFragment mExpirationPickerDialogFragment;
             mExpirationPickerDialogFragment = ExpirationPickerDialogFragment.newInstance(R.string.expiration_picker_default_title, mExpirationDate);
-            mExpirationPickerDialogFragment.addDatePickerListener(this);
+
             mExpirationPickerDialogFragment.setDatePickerDestroyedListener(this);
+            mExpirationPickerDialogFragment.setDatePickerListener(this);
             mExpirationPickerDialogFragment.show(fragmentTransaction, ExpirationPickerDialogFragment.TAG);
             mDatePickerOpen = true;
         } catch (ClassCastException e) {

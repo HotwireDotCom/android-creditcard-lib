@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
@@ -9,6 +10,6 @@
     <dimen name="expiration_picker_margin_top">20dp</dimen>
     <dimen name="expiration_picker_margin_bottom">20dp</dimen>
     <dimen name="expiration_picker_margin_side_big">60dp</dimen>
-    <dimen name="expiration_picker_margin_side_small">37dp</dimen>
+    <dimen name="expiration_picker_margin_side_small">5dp</dimen>
 
 </resources>

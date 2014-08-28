@@ -25,15 +25,13 @@ import com.hotwire.hotels.hwcclib.filter.CreditCardInputFilter;
 /**
  * Created by ahobbs on 8/8/14.
  */
-public class CreditCardNumberEditField extends EditText implements TextWatcher {
+public class CreditCardNumberEditField extends EditText {
     public static final String TAG = CreditCardNumberEditField.class.getSimpleName();
 
     public static final int NO_RES_ID = -1;
 
     private final Context mContext;
     private AnimatedScaleDrawable mAnimatedScaleDrawable;
-
-
 
     /**
      *
@@ -73,9 +71,13 @@ public class CreditCardNumberEditField extends EditText implements TextWatcher {
         setHintTextColor(mContext.getResources().getColor(R.color.field_text_color_hint_default));
         setGravity(Gravity.BOTTOM);
         setSingleLine(true);
-        // for the Credit card field we do not want to have suggestions from keyboards
-        // this makes the inputfilter very hard to deal with
-        setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_CLASS_NUMBER);
+        /* for the Credit card field we do not want to have suggestions from keyboards
+         * this makes the inputfilter very hard to deal with. Also attempt to restrict the keyboard to
+         * only be the number pad for credit card entry.
+         */
+        setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
+                     InputType.TYPE_CLASS_NUMBER |
+                     InputType.TYPE_NUMBER_VARIATION_PASSWORD);
 
         initializeAnimatedScaleDrawable(mContext.getResources().getDrawable(R.drawable.ic_credit_card_generic));
         setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.compound_drawable_padding_default));
@@ -83,47 +85,7 @@ public class CreditCardNumberEditField extends EditText implements TextWatcher {
                                                 null,
                                                 null,
                                                 null);
-        addTextChangedListener(this);
-    }
-
-    /**
-     *
-     * @param s
-     * @param start
-     * @param count
-     * @param after
-     */
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // no op
-    }
-
-    /**
-     *
-     * @param text
-     * @param start
-     * @param lengthBefore
-     * @param lengthAfter
-     */
-    @Override
-    public void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        super.onTextChanged(text, start, lengthBefore, lengthAfter);
-    }
-
-    /**
-     *
-     * @param s
-     */
-    @Override
-    public void afterTextChanged(Editable s) {
-        if (s.length() > 0) {
-            if (Character.isWhitespace(s.charAt(s.length() - 1))) {
-                String goodString = new String(s.toString().trim());
-                goodString = CreditCardUtilities.getCleanString(goodString);
-                Log.d(TAG, "Replacing: " + s + " with: " + goodString);
-                s.replace(0, s.length(), goodString, 0, goodString.length());
-            }
-        }
+        addTextChangedListener(new CreditCardNumberTextWatcher());
     }
 
     /******************************
@@ -196,5 +158,47 @@ public class CreditCardNumberEditField extends EditText implements TextWatcher {
         mAnimatedScaleDrawable = new AnimatedScaleDrawable(drawable);
         int duration = mContext.getResources().getInteger(R.integer.credit_card_field_animation_duration_ms);
         mAnimatedScaleDrawable.setDuration(duration);
+    }
+
+    /**
+     *
+     */
+    static class CreditCardNumberTextWatcher implements TextWatcher {
+        int mStart = 0;
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            Log.d(TAG, "before | start: " + start + " | count: " + count + " | after: " + after);
+            // store the cursor start location
+            mStart = start;
+        }
+
+        /**
+         *
+         * @param text
+         * @param start
+         * @param lengthBefore
+         * @param lengthAfter
+         */
+        @Override
+        public void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
+            // no op
+        }
+
+        /**
+         * This will force each character to go through the input filter to be re-formatted when it is being
+         * edited
+         *
+         * @param s
+         */
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (mStart > 0) {
+                String goodString = new String(s.toString().trim());
+                goodString = CreditCardUtilities.getCleanString(goodString);
+                Log.d(TAG, "Replacing: " + s + " with: " + goodString);
+                s.replace(0, s.length(), goodString, 0, goodString.length());
+            }
+        }
     }
 }

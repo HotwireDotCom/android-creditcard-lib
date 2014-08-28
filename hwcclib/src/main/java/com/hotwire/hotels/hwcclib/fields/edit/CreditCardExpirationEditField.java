@@ -7,6 +7,7 @@
 package com.hotwire.hotels.hwcclib.fields.edit;
 
 import android.content.Context;
+import android.text.InputType;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.widget.EditText;
@@ -60,6 +61,7 @@ public class CreditCardExpirationEditField extends EditText {
         setHint(R.string.expiration_field_hint_text);
         setHintTextColor(mContext.getResources().getColor(R.color.field_text_color_hint_default));
         setSingleLine(true);
+        setInputType(InputType.TYPE_CLASS_NUMBER);
         setKeyListener(null);
     }
 

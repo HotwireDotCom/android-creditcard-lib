@@ -169,17 +169,14 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
      * BEGIN CUSTOM METHODS
      ******************************/
 
-    /**
-     *
-     * @param expirationPickerListener
-     */
-    // TODO get rid of this. No way to access the object and add more listeners.
-    public void addDatePickerListener(ExpirationPickerListener expirationPickerListener) {
-        mExpirationPickerListener = expirationPickerListener;
-    }
-
     public void setDatePickerDestroyedListener(DatePickerDestroyedListener datePickerDestroyedListener) {
         mDatePickerDestroyedListener = datePickerDestroyedListener;
+    }
+
+    public void setDatePickerListener(ExpirationPickerListener listener) {
+        if (listener != null) {
+            mExpirationPickerListener = listener;
+        }
     }
 
     /**
@@ -211,15 +208,20 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
      *
      * @param selectedDate
      */
-    private void callPositiveListeners(Date selectedDate) {
-        mExpirationPickerListener.onExpirationDateSelected(selectedDate);
+
+    private void callPositiveListener(Date selectedDate) {
+        if (mExpirationPickerListener != null) {
+            mExpirationPickerListener.onExpirationDateSelected(selectedDate);
+        }
     }
 
     /**
      *
      */
-    private void callNegativeListeners() {
-        mExpirationPickerListener.onDialogPickerCanceled();
+    private void callNegativeListener() {
+        if (mExpirationPickerListener != null) {
+            mExpirationPickerListener.onDialogPickerCanceled();
+        }
     }
 
     /**
@@ -272,7 +274,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Date date = buildDate();
-                callPositiveListeners(date);
+                callPositiveListener(date);
                 dialog.dismiss();
             }
         };
@@ -288,7 +290,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                callNegativeListeners();
+                callNegativeListener();
                 dialog.dismiss();
             }
         };

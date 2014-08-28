@@ -189,7 +189,7 @@ public final class CreditCardUtilities {
 
     }
 
-    /**hfhf
+    /**
      *
      * @param inputNumber - a sanitized string representation of the credit card number
      * @return true if inputNumber passes the Luhn algorithm
