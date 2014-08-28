@@ -87,8 +87,8 @@ public final class CreditCardUtilities {
                 DISCOVER_CARD_TYPE_REGEX,
                 CARD_FORMATTED_LENGTH_19,
                 SECURITY_LENGTH_3,
-                OFFSET_3,
-                MODULO_7,
+                OFFSET_1,
+                MODULO_5,
                 R.drawable.ic_credit_card_discover),
         INVALID(EMPTY_STRING,
                 EMPTY_STRING,
@@ -189,7 +189,7 @@ public final class CreditCardUtilities {
 
     }
 
-    /**
+    /**hfhf
      *
      * @param inputNumber - a sanitized string representation of the credit card number
      * @return true if inputNumber passes the Luhn algorithm
