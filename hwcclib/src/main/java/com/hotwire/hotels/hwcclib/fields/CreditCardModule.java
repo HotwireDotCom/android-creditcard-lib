@@ -64,6 +64,11 @@ public class CreditCardModule extends LinearLayout {
         init(context);
     }
 
+    // TODO remove this
+    public void setReportingListener(CreditCardController.ReportingListener reportingListener) {
+        mCreditCardController.setReportingListener(reportingListener);
+    }
+
     /**
      *
      */

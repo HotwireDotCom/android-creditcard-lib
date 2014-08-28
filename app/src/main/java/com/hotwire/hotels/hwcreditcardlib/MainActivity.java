@@ -14,15 +14,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.hotwire.hotels.hwcclib.CreditCardController;
 import com.hotwire.hotels.hwcclib.CreditCardModel;
 import com.hotwire.hotels.hwcclib.fields.CreditCardModule;
 
 /**
  *
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements CreditCardController.ReportingListener{
 
     CreditCardModule creditCardModule;
+    TextView reportingTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,9 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
+        reportingTextView = (TextView) findViewById(R.id.reporting_text_view);
+
     }
 
     @Override
@@ -75,5 +80,10 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void report(String report) {
+        reportingTextView.setText(report);
     }
 }
