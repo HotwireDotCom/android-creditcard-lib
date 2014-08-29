@@ -161,7 +161,9 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
         if (getDialog() != null && getRetainInstance()) {
             getDialog().setDismissMessage(null);
         }
-        mDatePickerDestroyedListener.datePickerDestroyed();
+        if (mDatePickerDestroyedListener != null) {
+            mDatePickerDestroyedListener.datePickerDestroyed();
+        }
         super.onDestroyView();
     }
 

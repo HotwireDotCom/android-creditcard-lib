@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
+import android.text.method.TransformationMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.hotwire.hotels.hwcclib.dialog.date.ExpirationPickerDialogFragment;
 import com.hotwire.hotels.hwcclib.dialog.date.ExpirationPickerListener;
@@ -232,7 +235,6 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
                 complete();
             }
             mSecCodeEditField.clearErrors();
-            handleEvent(CreditCardEvent.SEC_CODE_VALIDATED_EVENT);
         }
         else {
             mSecCodeCompleted = false;
@@ -243,6 +245,16 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
             else if (mSecCodeEditField.getText().length() != mCardIssuer.getSecurityLength()) {
                 mSecCodeEditField.setErrorState();
             }
+        }
+    }
+
+    private void updateTransformationMethod(EditText editText, TransformationMethod transformationMethod) {
+        if (editText != null) {
+            int start, stop;
+            start = editText.getSelectionStart();
+            stop = editText.getSelectionEnd();
+            editText.setTransformationMethod(transformationMethod);
+            editText.setSelection(start, stop);
         }
     }
 
@@ -473,6 +485,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
             @Override
             public void execute() {
                 mHappyPathIsBroken = true;
+                updateTransformationMethod(mSecCodeEditField, null);
                 setCurrentState(CreditCardState.SEC_CODE_FIELD_FOCUSED_STATE);
                 evaluateSecurityCode();
             }
@@ -593,6 +606,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
             @Override
             public void execute() {
                 mHappyPathIsBroken = true;
+                updateTransformationMethod(mSecCodeEditField, PasswordTransformationMethod.getInstance());
                 setCurrentState(CreditCardState.IDLE_STATE);
                 evaluateSecurityCode();
             }
@@ -608,16 +622,11 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
                 evaluateSecurityCode();
             }
         });
-        secCodeEditStateMap.put(CreditCardEvent.SEC_CODE_VALIDATED_EVENT, new Transition() {
-            @Override
-            public void execute() {
-                setCurrentState(CreditCardState.IDLE_STATE);
-            }
-        });
         secCodeEditStateMap.put(CreditCardEvent.FOCUS_LOST_EVENT, new Transition() {
             @Override
             public void execute() {
                 mHappyPathIsBroken = true;
+                updateTransformationMethod(mSecCodeEditField, PasswordTransformationMethod.getInstance());
                 setCurrentState(CreditCardState.IDLE_STATE);
                 evaluateSecurityCode();
             }
