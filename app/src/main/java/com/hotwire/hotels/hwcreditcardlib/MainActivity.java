@@ -48,6 +48,7 @@ public class MainActivity extends Activity implements CreditCardController.Credi
         });
 
         creditCardModule.setCreditCardModelCompleteListener(this);
+        reportingTextView = (TextView) findViewById(R.id.reporting_text_view);
     }
 
     @Override
