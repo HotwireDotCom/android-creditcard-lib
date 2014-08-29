@@ -189,4 +189,20 @@ public class CreditCardModule extends LinearLayout {
     public void onRestoreSavedInstanceState(Bundle savedInstanceState) {
         mCreditCardController.onRestoreSavedInstanceState(savedInstanceState);
     }
+
+    /******************************
+     * Unit Test Helper Methods
+     ******************************/
+
+    CreditCardNumberEditField getCreditCardNumberEditField() {
+        return mCreditCardNumber;
+    }
+
+    CreditCardExpirationEditField getCreditCardExpirationEditField() {
+        return mCreditCardExpiration;
+    }
+
+    CreditCardSecurityCodeEditField getCreditCardSecurityCodeEditField() {
+        return mCreditCardSecurityCode;
+    }
 }
