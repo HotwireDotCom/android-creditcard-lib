@@ -151,6 +151,19 @@ public class CreditCardNumberEditField extends EditText {
     }
 
     /**
+     * This is intended to be used by the controller's restoreInstanceState method in order
+     * to restore the image associated with the current card type.
+     * @param cardIssuer
+     */
+    public void setCardTypeImageResource(CreditCardUtilities.CardIssuer cardIssuer) {
+
+        setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(cardIssuer.getIconResourceId()),
+                null,
+                null,
+                null);
+    }
+
+    /**
      *
      * @param drawable
      */

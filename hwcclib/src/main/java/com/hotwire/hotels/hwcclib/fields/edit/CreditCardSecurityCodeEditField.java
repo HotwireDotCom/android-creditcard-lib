@@ -84,13 +84,6 @@ public class CreditCardSecurityCodeEditField extends EditText {
                                                 null,
                                                 null,
                                                 null);
-
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // NO OP
-            }
-        });
     }
 
     /******************************
@@ -153,6 +146,28 @@ public class CreditCardSecurityCodeEditField extends EditText {
 
         InputFilter secCodeFilter = new InputFilter.LengthFilter(cardIssuer.getSecurityLength());
         setFilters(new InputFilter[]{secCodeFilter});
+    }
+
+    /**
+     * This is intended to be used only by the controller's restoreInstanceState method in order
+     * to restore the appropriate security code image.
+     * @param cardIssuer
+     */
+    public void setSecurityResourceImage(CreditCardUtilities.CardIssuer cardIssuer) {
+        int secResId;
+        if (cardIssuer == CreditCardUtilities.CardIssuer.INVALID) {
+            secResId = R.drawable.ic_security_code_disabled;
+        }
+        else if (cardIssuer.getSecurityLength() == CreditCardUtilities.SECURITY_LENGTH_3) {
+            secResId = R.drawable.ic_security_code_3;
+        }
+        else {
+            secResId = R.drawable.ic_security_code_4;
+        }
+        setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(secResId),
+                                                null,
+                                                null,
+                                                null);
     }
 
     /**

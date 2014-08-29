@@ -305,7 +305,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     private NumberPicker.OnValueChangeListener getMonthOnValueChangeListener() {
         return new NumberPicker.OnValueChangeListener() {
             @Override
-            public void onValueChange(NumberPicker view, int i, int i2) {
+            public void onValueChange(NumberPicker view, int oldVal, int newVal) {
                 mMonthPickerValue = view.getValue();
             }
         };
@@ -318,7 +318,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     private NumberPicker.OnValueChangeListener getYearOnValueChangeListener() {
         return new NumberPicker.OnValueChangeListener() {
             @Override
-            public void onValueChange(NumberPicker view, int i, int i2) {
+            public void onValueChange(NumberPicker view, int oldVal, int newVal) {
                 mYearPickerValue = view.getValue();
             }
         };

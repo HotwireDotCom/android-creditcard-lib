@@ -64,13 +64,26 @@ public class CreditCardModule extends LinearLayout {
         init(context);
     }
 
-    // TODO remove this
-    public void setReportingListener(CreditCardController.ReportingListener reportingListener) {
-        mCreditCardController.setReportingListener(reportingListener);
+    /**
+     *
+     * @param creditCardModelCompleteListener
+     */
+    public void setCreditCardModelCompleteListener(CreditCardController.CreditCardModelCompleteListener
+                                                           creditCardModelCompleteListener) {
+        mCreditCardController.setCreditCardModelCompleteListener(creditCardModelCompleteListener);
     }
 
     /**
      *
+     * @return
+     */
+    public boolean isComplete() {
+        return mCreditCardController.isComplete();
+    }
+
+    /**
+     *
+     * @param context
      */
     private void init(Context context) {
         setOrientation(LinearLayout.VERTICAL);
