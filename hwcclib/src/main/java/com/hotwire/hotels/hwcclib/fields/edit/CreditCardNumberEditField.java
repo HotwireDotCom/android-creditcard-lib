@@ -105,7 +105,7 @@ public class CreditCardNumberEditField extends EditText {
      *
      * @param newCardTypeResId
      */
-    public void setCardTypeForField(int newCardTypeResId) {
+    private void setCardTypeForField(int newCardTypeResId) {
         if (newCardTypeResId != NO_RES_ID) {
             Drawable newFieldDrawable = mContext.getResources().getDrawable(newCardTypeResId);
             mAnimatedScaleDrawable.startDrawableTransition(newFieldDrawable);
@@ -141,23 +141,31 @@ public class CreditCardNumberEditField extends EditText {
     /**
      *
      * @param cardIssuer
+     * @param shouldAnimate
      */
-    public void updateCardType(CreditCardUtilities.CardIssuer cardIssuer) {
+    public void updateCardType(CreditCardUtilities.CardIssuer cardIssuer, boolean shouldAnimate) {
         InputFilter creditCardNumFilter = new CreditCardInputFilter(cardIssuer.getOffset(),
                 cardIssuer.getModulo(),
                 cardIssuer.getFormattedLength());
         setFilters(new InputFilter[]{creditCardNumFilter});
-        setCardTypeForField(cardIssuer.getIconResourceId());
+
+        int resCardResId = cardIssuer.getIconResourceId();
+        if (shouldAnimate) {
+            setCardTypeForField(resCardResId);
+        }
+        else {
+            setCardTypeImageResource(resCardResId);
+        }
     }
 
     /**
      * This is intended to be used by the controller's restoreInstanceState method in order
      * to restore the image associated with the current card type.
-     * @param cardIssuer
+     * @param newCardTypeResId
      */
-    public void setCardTypeImageResource(CreditCardUtilities.CardIssuer cardIssuer) {
-
-        setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(cardIssuer.getIconResourceId()),
+    private void setCardTypeImageResource(int newCardTypeResId) {
+        mAnimatedScaleDrawable.setDrawable(mContext.getResources().getDrawable(newCardTypeResId));
+        setCompoundDrawablesWithIntrinsicBounds(mAnimatedScaleDrawable,
                 null,
                 null,
                 null);

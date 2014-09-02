@@ -68,35 +68,40 @@ public final class CreditCardUtilities {
                 SECURITY_LENGTH_3,
                 OFFSET_1,
                 MODULO_5,
-                R.drawable.ic_credit_card_visa),
+                R.drawable.ic_credit_card_visa,
+                R.drawable.ic_security_code_3),
         MASTERCARD(MASTERCARD_CARD_REGEX,
                 MASTERCARD_CARD_TYPE_REGEX,
                 CARD_FORMATTED_LENGTH_19,
                 SECURITY_LENGTH_3,
                 OFFSET_1,
                 MODULO_5,
-                R.drawable.ic_credit_card_mastercard),
+                R.drawable.ic_credit_card_mastercard,
+                R.drawable.ic_security_code_3),
         AMERICANEXPRESS(AMERICANEXPRESS_CARD_REGEX,
                 AMERICANEXPRESS_CARD_TYPE_REGEX,
                 CARD_FORMATTED_LENGTH_17,
                 SECURITY_LENGTH_4,
                 OFFSET_3,
                 MODULO_7,
-                R.drawable.ic_credit_card_americanexpress),
+                R.drawable.ic_credit_card_americanexpress,
+                R.drawable.ic_security_code_4),
         DISCOVER(DISCOVER_CARD_REGEX,
                 DISCOVER_CARD_TYPE_REGEX,
                 CARD_FORMATTED_LENGTH_19,
                 SECURITY_LENGTH_3,
                 OFFSET_1,
                 MODULO_5,
-                R.drawable.ic_credit_card_discover),
+                R.drawable.ic_credit_card_discover,
+                R.drawable.ic_security_code_3),
         INVALID(EMPTY_STRING,
                 EMPTY_STRING,
                 CARD_FORMATTED_LENGTH_19,
                 SECURITY_LENGTH_3,
                 OFFSET_1,
                 MODULO_5,
-                R.drawable.ic_credit_card_generic);
+                R.drawable.ic_credit_card_generic,
+                R.drawable.ic_security_code_disabled);
 
         private String mRegex;
         private String mRegexType;
@@ -107,8 +112,14 @@ public final class CreditCardUtilities {
         private int mIconResourceId;
         private int mSecCodeResourceId;
 
-        private CardIssuer(String regex, String regexType, int formattedLength, int securityLength, int offset, int modulo,
-                           int iconResourceId) {
+        private CardIssuer(String regex,
+                           String regexType,
+                           int formattedLength,
+                           int securityLength,
+                           int offset,
+                           int modulo,
+                           int iconResourceId,
+                           int secCodeResourceId) {
             this.mRegex = regex;
             this.mRegexType = regexType;
             this.mFormattedLength = formattedLength;
@@ -116,6 +127,7 @@ public final class CreditCardUtilities {
             this.mOffset = offset;
             this.mModulo = modulo;
             this.mIconResourceId = iconResourceId;
+            this.mSecCodeResourceId = secCodeResourceId;
         }
 
         public String getRegex() {
@@ -144,6 +156,10 @@ public final class CreditCardUtilities {
 
         public int getIconResourceId() {
             return mIconResourceId;
+        }
+
+        public int getSecurityIconResourceId() {
+            return mSecCodeResourceId;
         }
     }
 

@@ -222,10 +222,8 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         {
             mSecCodeEditField.setEnabled(true);
         }
-        mCreditCardNumEditField.updateCardType(mCardIssuer);
-        mSecCodeEditField.updateCardType(mCardIssuer);
-        InputFilter secCodeFilter = new InputFilter.LengthFilter(mCardIssuer.getSecurityLength());
-        mSecCodeEditField.setFilters(new InputFilter[]{secCodeFilter});
+        mCreditCardNumEditField.updateCardType(mCardIssuer, true);
+        mSecCodeEditField.updateCardType(mCardIssuer, true);
     }
 
     private void evaluateSecurityCode() {
@@ -320,9 +318,6 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         mIgnoringEvents = true;
 
         mCurrentState = CreditCardState.values()[savedInstanceState.getInt(CURRENT_STATE_KEY, 0)];
-        mCreditCardNumEditField.setText(savedInstanceState
-                .getString(CREDIT_CARD_NUMBER_TEXT_KEY, ""));
-        mSecCodeEditField.setText(savedInstanceState.getString(SEC_CODE_TEXT_KEY, ""));
         String savedDateText = savedInstanceState.getString(EXP_DATE_TEXT_KEY, "");
         mExpDateEditField.setText(savedDateText);
         mNumberCompleted = savedInstanceState.getBoolean(NUMBER_COMPLETED_KEY, false);
@@ -339,8 +334,14 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         else {
             mSecCodeEditField.setEnabled(true);
         }
-        mSecCodeEditField.setSecurityResourceImage(mCardIssuer);
-        mCreditCardNumEditField.setCardTypeImageResource(mCardIssuer);
+        mCreditCardNumEditField.updateCardType(mCardIssuer, false);
+        mSecCodeEditField.updateCardType(mCardIssuer, false);
+        // need to determine the card issuer before setting the text on the number and security code fields
+        mCreditCardNumEditField.setText(savedInstanceState
+                .getString(CREDIT_CARD_NUMBER_TEXT_KEY, ""));
+        mSecCodeEditField.setText(savedInstanceState.getString(SEC_CODE_TEXT_KEY, ""));
+        mSecCodeEditField.updateCardType(mCardIssuer, false);
+        mCreditCardNumEditField.updateCardType(mCardIssuer, false);
 
         long savedDate = savedInstanceState.getLong(EXP_DATE_KEY, new Date().getTime());
         mExpirationDate = new Date(savedDate);
@@ -353,7 +354,6 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
                 mCurrentState == CreditCardState.SEC_CODE_FIELD_FOCUSED_STATE) {
             mSecCodeEditField.requestFocus();
         }
-
         mExpirationPickerDialogFragment = (ExpirationPickerDialogFragment) ((Activity) mContext).getFragmentManager().findFragmentByTag(ExpirationPickerDialogFragment.TAG);
 
         if (mExpirationPickerDialogFragment != null) {
@@ -363,6 +363,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         evaluateCreditCardNumber();
         evaluateSecurityCode();
 
+        if (mSecCodeEditField.hasFocus()) {
+            updateTransformationMethod(mSecCodeEditField, null);
+        }
         mIgnoringEvents = false;
     }
 
@@ -583,7 +586,6 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
             @Override
             public void execute() {
                 setCurrentState(CreditCardState.SEC_CODE_FIELD_EDIT_STATE);
-                mSecCodeEditField.setTransformationMethod(null);
                 evaluateSecurityCode();
             }
         });
@@ -603,7 +605,6 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         secCodeEditStateMap.put(CreditCardEvent.TEXT_CHANGED_EVENT, new Transition() {
             @Override
             public void execute() {
-                mSecCodeEditField.setTransformationMethod(null);
                 evaluateSecurityCode();
             }
         });

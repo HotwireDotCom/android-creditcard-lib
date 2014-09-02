@@ -94,7 +94,7 @@ public class CreditCardSecurityCodeEditField extends EditText {
      *
      * @param newSecurityCodeResId
      */
-    public void setCardTypeForField(int newSecurityCodeResId) {
+    private void setCardTypeForField(int newSecurityCodeResId) {
         if (newSecurityCodeResId != NO_RES_ID) {
             Drawable newFieldDrawable = mContext.getResources().getDrawable(newSecurityCodeResId);
             mAnimatedScaleDrawable.startDrawableTransition(newFieldDrawable);
@@ -130,19 +130,16 @@ public class CreditCardSecurityCodeEditField extends EditText {
     /**
      *
      * @param cardIssuer
+     * @param shouldAnimate
      */
-    public void updateCardType(CreditCardUtilities.CardIssuer cardIssuer) {
-        int secResId;
-        if (cardIssuer == CreditCardUtilities.CardIssuer.INVALID) {
-            secResId = R.drawable.ic_security_code_disabled;
-        }
-        else if (cardIssuer.getSecurityLength() == CreditCardUtilities.SECURITY_LENGTH_3) {
-            secResId = R.drawable.ic_security_code_3;
+    public void updateCardType(CreditCardUtilities.CardIssuer cardIssuer, boolean shouldAnimate) {
+        int secResId = cardIssuer.getSecurityIconResourceId();
+        if (shouldAnimate) {
+            setCardTypeForField(secResId);
         }
         else {
-            secResId = R.drawable.ic_security_code_4;
+            setSecurityResourceImage(secResId);
         }
-        setCardTypeForField(secResId);
 
         InputFilter secCodeFilter = new InputFilter.LengthFilter(cardIssuer.getSecurityLength());
         setFilters(new InputFilter[]{secCodeFilter});
@@ -151,20 +148,11 @@ public class CreditCardSecurityCodeEditField extends EditText {
     /**
      * This is intended to be used only by the controller's restoreInstanceState method in order
      * to restore the appropriate security code image.
-     * @param cardIssuer
+     * @param secCodeResId
      */
-    public void setSecurityResourceImage(CreditCardUtilities.CardIssuer cardIssuer) {
-        int secResId;
-        if (cardIssuer == CreditCardUtilities.CardIssuer.INVALID) {
-            secResId = R.drawable.ic_security_code_disabled;
-        }
-        else if (cardIssuer.getSecurityLength() == CreditCardUtilities.SECURITY_LENGTH_3) {
-            secResId = R.drawable.ic_security_code_3;
-        }
-        else {
-            secResId = R.drawable.ic_security_code_4;
-        }
-        setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(secResId),
+    private void setSecurityResourceImage(int secCodeResId) {
+        mAnimatedScaleDrawable.setDrawable(mContext.getResources().getDrawable(secCodeResId));
+        setCompoundDrawablesWithIntrinsicBounds(mAnimatedScaleDrawable,
                                                 null,
                                                 null,
                                                 null);
