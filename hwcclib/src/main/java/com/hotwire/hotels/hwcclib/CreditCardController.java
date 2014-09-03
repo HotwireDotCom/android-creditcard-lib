@@ -139,6 +139,11 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
                 mCardIssuer.getFormattedLength());
         mCreditCardNumEditField.setFilters(new InputFilter[] {creditCardNumFilter});
 
+        /*
+         * If the credit card number field or the expiration date field have focus when the controller
+         * is initialized, dispatch an appropriate on focus event.
+         *
+         */
         if (mCreditCardNumEditField.hasFocus()) {
             handleEvent(CreditCardEvent.NUMBER_FIELD_ON_FOCUS_EVENT);
         }
@@ -147,15 +152,27 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
     }
 
+    /**
+     *
+     * @param state
+     */
     private void setCurrentState(CreditCardState state) {
-        Log.i("debug", "Setting current state: " + state.toString());
+        if (LOGGING_ENABLED) {
+            Log.i(TAG, "Setting current state: " + state.toString());
+        }
         mCurrentState = state;
     }
 
+    /**
+     *
+     * @param event
+     */
     private void handleEvent(CreditCardEvent event) {
         Transition transition = mTransitionMap.get(mCurrentState).get(event);
         if (transition != null && !mIgnoringEvents) {
-            Log.i("debug", "Handling event: " + event.toString() + " for state: " + mCurrentState.toString());
+            if (LOGGING_ENABLED) {
+                Log.i(TAG, "Handling event: " + event.toString() + " for state: " + mCurrentState.toString());
+            }
             transition.execute();
         }
         else if (LOGGING_ENABLED) {
@@ -163,13 +180,50 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
     }
 
+    /**
+     *
+     * @param creditCardModelCompleteListener
+     */
     public void setCreditCardModelCompleteListener(CreditCardModelCompleteListener creditCardModelCompleteListener) {
         mCreditCardModelCompleteListener = creditCardModelCompleteListener;
     }
 
+
+    /**
+     *
+     */
+    public void complete() {
+        if (mNumberCompleted && mExpDateCompleted && mSecCodeCompleted && mCreditCardModelCompleteListener != null) {
+            mCreditCardModelCompleteListener.onCreditCardModelComplete(new CreditCardModel(
+                    mCreditCardNumEditField.getRawCreditCardNumber(),
+                    mExpirationDate, mSecCodeEditField.getText().toString()));
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isComplete() {
+        if (mNumberCompleted && mExpDateCompleted && mSecCodeCompleted) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     *
+     */
     private void evaluateCreditCardNumber() {
         getCreditCardType();
-        // Reset the happy path and all of the fields.
+        /*
+         * If the user has entered and then deleted all of the numbers in the CreditCardNumberEditField,
+         * clear all of the fields and reset the happy path.
+         * Note: If the user has already selected an expiration date, the text in the ExpirationDateEditField
+         * will be reset, but the stored date will not be reset to today's date.
+         */
         if (mCreditCardNumEditField.getRawCreditCardNumber().isEmpty() && mNumberTextHasBeenEntered) {
             mHappyPathIsBroken = false;
             mNumberCompleted = false;
@@ -191,9 +245,17 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
                 handleEvent(CreditCardEvent.CREDIT_CARD_NUMBER_VALIDATED_EVENT);
         }
         else {
+            /*
+             * It is already known that the number the user entered is not valid, so, if the user has
+             * entered the maximum number of numbers allowed relative to their card type,
+             * set the CreditCardNumberEditField's error state.
+             */
             if (mCreditCardNumEditField.getText().length() == mCardIssuer.getFormattedLength()) {
                 mCreditCardNumEditField.setErrorState();
             }
+            /*
+             * If the user is still editing the card, clear any errors.
+             */
             else if (mCurrentState == CreditCardState.NUMBER_FIELD_FOCUSED_STATE ||
                     mCurrentState == CreditCardState.NUMBER_FIELD_EDIT_STATE) {
                 mCreditCardNumEditField.clearErrors();
@@ -205,6 +267,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
     }
 
+    /**
+     *
+     */
     private void getCreditCardType() {
         CreditCardUtilities.CardIssuer previousCardType = mCardIssuer;
         mCardIssuer = CreditCardUtilities.getCardIssuer(mCreditCardNumEditField.getRawCreditCardNumber());
@@ -214,6 +279,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
     }
 
+    /**
+     *
+     */
     private void cardTypeChanged() {
         if (mCardIssuer == CreditCardUtilities.CardIssuer.INVALID) {
             mSecCodeEditField.setEnabled(false);
@@ -226,6 +294,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         mSecCodeEditField.updateCardType(mCardIssuer, true);
     }
 
+    /**
+     *
+     */
     private void evaluateSecurityCode() {
         if (mCardIssuer != CreditCardUtilities.CardIssuer.INVALID &&
                 mSecCodeEditField.getText().length() == mCardIssuer.getSecurityLength()) {
@@ -237,16 +308,66 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
         else {
             mSecCodeCompleted = false;
+            /*
+             * If the user is currently editing or focused on the SecCodeEditField,
+             * clear any errors.
+             */
             if (mCurrentState == CreditCardState.SEC_CODE_FIELD_FOCUSED_STATE ||
                     mCurrentState == CreditCardState.SEC_CODE_FIELD_EDIT_STATE) {
                 mSecCodeEditField.clearErrors();
             }
+            /*
+             * If the user is not editing or focused on the SecCodeEditField and the length
+             * of the code that has been entered is not equal to the length required for
+             * their card type, then put the field into its error state.
+             */
             else if (mSecCodeEditField.getText().length() != mCardIssuer.getSecurityLength()) {
                 mSecCodeEditField.setErrorState();
             }
         }
     }
 
+    /**
+     *
+     * @param expirationDate
+     */
+    private void evaluateExpDate(Date expirationDate) {
+        if (expirationDate == null) {
+            mExpDateCompleted = false;
+            return;
+        }
+        mExpirationDate = expirationDate;
+        Calendar today = Calendar.getInstance();
+        Calendar expDate = Calendar.getInstance();
+        expDate.setTime(expirationDate);
+        /*
+         * Check that the expiration date is not before the current date. If it is a valid date, clear
+         * any errors.
+         */
+        if (today.get(Calendar.YEAR) < expDate.get(Calendar.YEAR) ||
+                (today.get(Calendar.YEAR) == expDate.get(Calendar.YEAR) &&
+                        today.get(Calendar.MONTH) <= expDate.get(Calendar.MONTH))) {
+            mExpDateEditField.clearErrors();
+            mExpDateCompleted = true;
+            if (isComplete() && !mIgnoringEvents){
+                complete();
+            }
+        }
+        /*
+         * If the date is before the current date, set the ExpDateEditField's error state.
+         */
+        else {
+            mExpDateEditField.setErrorState();
+            mExpDateCompleted = false;
+        }
+    }
+
+    /**
+     * This is used to mask the numbers that have been entered into the SecCodeEditField, i.e. turn
+     * letters into shoulder-surfer-baffling dots.
+     * @param editText
+     * @param transformationMethod
+     */
     private void updateTransformationMethod(EditText editText, TransformationMethod transformationMethod) {
         if (editText != null) {
             int start, stop;
@@ -257,47 +378,10 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
     }
 
-    private void evaluateExpDate(Date expirationDate) {
-        if (expirationDate == null) {
-            mExpDateCompleted = false;
-            return;
-        }
-        mExpirationDate = expirationDate;
-        Calendar today = Calendar.getInstance();
-        Calendar expDate = Calendar.getInstance();
-        expDate.setTime(expirationDate);
-        if (today.get(Calendar.YEAR) < expDate.get(Calendar.YEAR) ||
-                (today.get(Calendar.YEAR) == expDate.get(Calendar.YEAR) &&
-                        today.get(Calendar.MONTH) <= expDate.get(Calendar.MONTH))) {
-            mExpDateEditField.clearErrors();
-            mExpDateCompleted = true;
-            if (isComplete() && !mIgnoringEvents){
-                complete();
-            }
-        }
-        else {
-            mExpDateEditField.setErrorState();
-            mExpDateCompleted = false;
-        }
-    }
-
-    public void complete() {
-        if (mNumberCompleted && mExpDateCompleted && mSecCodeCompleted && mCreditCardModelCompleteListener != null) {
-            mCreditCardModelCompleteListener.onCreditCardModelComplete(new CreditCardModel(
-                    mCreditCardNumEditField.getRawCreditCardNumber(),
-                    mExpirationDate, mSecCodeEditField.getText().toString()));
-        }
-    }
-
-    public boolean isComplete() {
-        if (mNumberCompleted && mExpDateCompleted && mSecCodeCompleted) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
+    /**
+     *
+     * @param savedInstanceState
+     */
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt(CURRENT_STATE_KEY, mCurrentState.ordinal());
         savedInstanceState.putString(CREDIT_CARD_NUMBER_TEXT_KEY, mCreditCardNumEditField.getRawCreditCardNumber());
@@ -314,7 +398,16 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         savedInstanceState.putInt(CARD_ISSUER_KEY, mCardIssuer.ordinal());
     }
 
+    /**
+     *
+     * Note: The order in which things are restored matters. Be careful when making changes.
+     * @param savedInstanceState
+     */
     public void onRestoreSavedInstanceState(Bundle savedInstanceState) {
+        /*
+         * Tell the state machine to ignore events while the saved state
+         * is being restored.
+         */
         mIgnoringEvents = true;
 
         mCurrentState = CreditCardState.values()[savedInstanceState.getInt(CURRENT_STATE_KEY, 0)];
@@ -346,6 +439,10 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         long savedDate = savedInstanceState.getLong(EXP_DATE_KEY, new Date().getTime());
         mExpirationDate = new Date(savedDate);
         evaluateExpDate(mExpirationDate);
+
+        /*
+         * Refocus any fields that were previously focused.
+         */
         if (mCurrentState == CreditCardState.NUMBER_FIELD_EDIT_STATE ||
                 mCurrentState == CreditCardState.NUMBER_FIELD_FOCUSED_STATE) {
             mCreditCardNumEditField.requestFocus();
@@ -354,21 +451,41 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
                 mCurrentState == CreditCardState.SEC_CODE_FIELD_FOCUSED_STATE) {
             mSecCodeEditField.requestFocus();
         }
-        mExpirationPickerDialogFragment = (ExpirationPickerDialogFragment) ((Activity) mContext).getFragmentManager().findFragmentByTag(ExpirationPickerDialogFragment.TAG);
+        /*
+         * If the ExpirationPickerDialogFragment was open, a reference to it will need to be obtained
+         * from the fragment manager.
+         */
+        mExpirationPickerDialogFragment = (ExpirationPickerDialogFragment) ((Activity) mContext).getFragmentManager()
+                .findFragmentByTag(ExpirationPickerDialogFragment.TAG);
 
         if (mExpirationPickerDialogFragment != null) {
             mExpirationPickerDialogFragment.setDatePickerDestroyedListener(this);
             mExpirationPickerDialogFragment.setDatePickerListener(this);
         }
+        /*
+         * Call the evaluators to set the appropriate error states on the CreditCardNumberEditField and
+         * the SecCodeEditField.
+         */
         evaluateCreditCardNumber();
         evaluateSecurityCode();
 
         if (mSecCodeEditField.hasFocus()) {
             updateTransformationMethod(mSecCodeEditField, null);
         }
+
+        /*
+         * Now that the saved state has been restored, tell the state machine to
+         * pay attention to events again.
+         */
         mIgnoringEvents = false;
     }
 
+    /**
+     *
+     * @param view
+     * @param motionEvent
+     * @return false so that the touch event is not consumed.
+     */
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         if (view.getClass().equals(CreditCardExpirationEditField.class) &&
@@ -382,6 +499,10 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         return false;
     }
 
+    /**
+     *
+     * @param selectedDate
+     */
     @Override
     public void onExpirationDateSelected(Date selectedDate) {
         mDatePickerOpen = false;
@@ -389,6 +510,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         evaluateExpDate(selectedDate);
     }
 
+    /**
+     *
+     */
     private void openDatePicker() {
         try {
             FragmentTransaction fragmentTransaction = ((Activity) mContext).getFragmentManager().beginTransaction();
@@ -406,6 +530,16 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
     }
 
+    /**
+     * If the happy path has not been broken, the SecCodeEditField should be given focus and the keyboard
+     * should automatically open. The keyboard cannot be opened while the date picker is open even if the
+     * SecCodeEditField has focus because the ExpirationPickerDialogFragment's containing window will not
+     * have focus. For this reason, the keyboard cannot be opened when a date has been selected. Instead,
+     * the app must wait for the ExpirationPickerDialogFragment to be destroyed so its containing window
+     * will no longer have focus.
+     * Note: In order to open the keyboard for a specific TextView, that TextView's containing window
+     * must have focus.
+     */
     @Override
     public void datePickerDestroyed() {
         if (!mHappyPathIsBroken) {
@@ -418,26 +552,48 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void onDialogPickerCanceled() {
         mDatePickerOpen = false;
     }
 
+    /**
+     *
+     * @param s
+     * @param start
+     * @param count
+     * @param after
+     */
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // NO OP
-    }
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {/*NO OP*/ }
 
+    /**
+     *
+     * @param text
+     * @param start
+     * @param lengthBefore
+     * @param lengthAfter
+     */
     @Override
     public void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
         handleEvent(CreditCardEvent.TEXT_CHANGED_EVENT);
     }
 
+    /**
+     *
+     * @param editable
+     */
     @Override
-    public void afterTextChanged(Editable editable) {
-        // NO OP
-    }
+    public void afterTextChanged(Editable editable) {/*NO OP*/ }
 
+    /**
+     *
+     * @param view
+     * @param hasFocus
+     */
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
         if (!hasFocus) {
@@ -454,10 +610,19 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
     }
 
+    /**
+     * The transition table has been implemented as a HashMap. Its entries represent states where
+     * the key is the CreditCardState and the value is the HashMap of all of the valid transitions
+     * for that state. The HashMap of transitions uses CreditCardEvents as keys and Transitions as
+     * values.
+     */
     private void initTransitionTable() {
 
         mTransitionMap = new HashMap<CreditCardState, Map<CreditCardEvent, Transition>>();
 
+        /*
+         *
+         */
         Map<CreditCardEvent, Transition> idleStateMap = new HashMap<CreditCardEvent, Transition>();
         idleStateMap.put(CreditCardEvent.NUMBER_FIELD_ON_FOCUS_EVENT, new Transition() {
             @Override
@@ -504,7 +669,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         });
         mTransitionMap.put(CreditCardState.IDLE_STATE, idleStateMap);
 
-
+        /*
+         *
+         */
         Map<CreditCardEvent, Transition> numberFocusedStateMap = new HashMap<CreditCardEvent, Transition>();
         numberFocusedStateMap.put(CreditCardEvent.TEXT_CHANGED_EVENT, new Transition() {
             @Override
@@ -524,7 +691,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         });
         mTransitionMap.put(CreditCardState.NUMBER_FIELD_FOCUSED_STATE, numberFocusedStateMap);
 
-
+        /*
+         *
+         */
         Map<CreditCardEvent, Transition> numberEditStateMap = new HashMap<CreditCardEvent, Transition>();
         numberEditStateMap.put(CreditCardEvent.TEXT_CHANGED_EVENT, new Transition() {
             @Override
@@ -554,6 +723,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         });
         mTransitionMap.put(CreditCardState.NUMBER_FIELD_EDIT_STATE, numberEditStateMap);
 
+        /*
+         *
+         */
         Map<CreditCardEvent, Transition> datePickerOpenStateMap = new HashMap<CreditCardEvent, Transition>();
         datePickerOpenStateMap.put(CreditCardEvent.CLOSE_DATE_PICKER_EVENT, new Transition() {
             @Override
@@ -580,7 +752,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         });
         mTransitionMap.put(CreditCardState.DATE_PICKER_OPEN_STATE, datePickerOpenStateMap);
 
-        // Set cvv focused transitions
+        /*
+         *
+         */
         Map<CreditCardEvent, Transition> secCodeFocusedStateMap = new HashMap<CreditCardEvent, Transition>();
         secCodeFocusedStateMap.put(CreditCardEvent.TEXT_CHANGED_EVENT, new Transition() {
             @Override
@@ -600,7 +774,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         });
         mTransitionMap.put(CreditCardState.SEC_CODE_FIELD_FOCUSED_STATE, secCodeFocusedStateMap);
 
-        // Set cvv edit transitions
+        /*
+         *
+         */
         Map<CreditCardEvent, Transition> secCodeEditStateMap = new HashMap<CreditCardEvent, Transition>();
         secCodeEditStateMap.put(CreditCardEvent.TEXT_CHANGED_EVENT, new Transition() {
             @Override

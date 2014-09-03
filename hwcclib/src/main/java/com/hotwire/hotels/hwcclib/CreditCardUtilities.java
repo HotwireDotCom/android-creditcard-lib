@@ -54,11 +54,15 @@ public final class CreditCardUtilities {
 
     }
     /**
-     * An enum containing all the supported cards and it's corresponding rules.
+     * An enum containing all the supported cards and their corresponding rules.
      * The rules are laid out in the following order
-     * mRegex for the card
-     * partial mRegex for determining the card issuer based on the first 4 characters entered
-     * the security code length
+     * mRegex for validating the card
+     * Partial mRegex for determining the card issuer based on the first 4 characters entered
+     * The security code length
+     * The offset used during credit card number formatting. See the CreditCardNumberEditField for more details
+     * The modulo value used to determine where to put spaces in a credit card number
+     * The id of the drawable for the credit card type
+     * The id of the drawable used to show where a security code is located on a card
      */
     public static enum CardIssuer {
 
@@ -130,34 +134,66 @@ public final class CreditCardUtilities {
             this.mSecCodeResourceId = secCodeResourceId;
         }
 
+        /**
+         *
+         * @return
+         */
         public String getRegex() {
             return mRegex;
         }
 
+        /**
+         *
+         * @return
+         */
         public String getRegexType() {
             return mRegexType;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getFormattedLength() {
             return mFormattedLength;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getSecurityLength() {
             return mSecurityLength;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getOffset() {
             return mOffset;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getModulo() {
             return mModulo;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getIconResourceId() {
             return mIconResourceId;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getSecurityIconResourceId() {
             return mSecCodeResourceId;
         }
