@@ -64,7 +64,7 @@ import java.util.Map;
 public class CreditCardController implements View.OnFocusChangeListener, TextWatcher, ExpirationPickerListener,
         View.OnTouchListener {
 
-    public static final String TAG = CreditCardController.class.getSimpleName();
+    public static final String TAG = CreditCardController.class.getCanonicalName();
 
     private static class CreditCardControllerState implements Serializable {
         private static final long serialVersionUID = 1L;
