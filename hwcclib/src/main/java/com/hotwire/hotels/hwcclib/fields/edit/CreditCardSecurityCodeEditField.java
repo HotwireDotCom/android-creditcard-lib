@@ -18,6 +18,7 @@ import android.widget.EditText;
 import com.hotwire.hotels.hwcclib.CreditCardUtilities;
 import com.hotwire.hotels.hwcclib.R;
 import com.hotwire.hotels.hwcclib.animation.drawable.AnimatedScaleDrawable;
+import com.hotwire.hotels.hwcclib.filter.SecurityCodeInputFilter;
 
 /**
  * Created by ahobbs on 8/8/14.
@@ -140,7 +141,7 @@ public class CreditCardSecurityCodeEditField extends EditText {
             setSecurityResourceImage(secResId);
         }
 
-        InputFilter secCodeFilter = new InputFilter.LengthFilter(cardIssuer.getSecurityLength());
+        InputFilter secCodeFilter = new SecurityCodeInputFilter(cardIssuer.getSecurityLength());
         setFilters(new InputFilter[]{secCodeFilter});
     }
 

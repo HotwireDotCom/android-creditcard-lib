@@ -38,8 +38,7 @@ public class CreditCardModule extends LinearLayout {
      * @param context
      */
     public CreditCardModule(Context context) {
-        super(context);
-        init(context);
+        this(context, null);
     }
 
     /**
@@ -48,8 +47,7 @@ public class CreditCardModule extends LinearLayout {
      * @param attrs
      */
     public CreditCardModule(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+        this(context, attrs, 0);
     }
 
     /**

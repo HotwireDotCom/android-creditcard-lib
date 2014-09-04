@@ -28,10 +28,10 @@ import java.util.List;
 public class ExpirationPickerDialogFragment extends DialogFragment {
     public static final String TAG = "DatePickerDialogFragment";
 
-    private static final String TITLE_KEY = "com.hotwire.hotels.hwcclib.dialog.date.title_key";
-    private static final String DATE_KEY = "com.hotwire.hotels.hwcclib.dialog.date.date_key";
-    private static final String MONTH_PICKER_KEY = "com.hotwire.hotels.hwcclib.dialog.date.month_picker_key";
-    private static final String YEAR_PICKER_KEY = "com.hotwire.hotels.hwcclib.dialog.date.year_picker_key";
+    private static final String TITLE_KEY = ExpirationPickerDialogFragment.class.getCanonicalName() + ".title_key";
+    private static final String DATE_KEY = ExpirationPickerDialogFragment.class.getCanonicalName() + ".date_key";
+    private static final String MONTH_PICKER_KEY = ExpirationPickerDialogFragment.class.getCanonicalName() + ".month_picker_key";
+    private static final String YEAR_PICKER_KEY = ExpirationPickerDialogFragment.class.getCanonicalName() + ".year_picker_key";
 
     private ExpirationPickerListener mExpirationPickerListener;
     private NumberPicker mNumberPickerMonth;
