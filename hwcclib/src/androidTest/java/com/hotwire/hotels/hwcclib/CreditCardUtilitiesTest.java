@@ -9,6 +9,8 @@ package com.hotwire.hotels.hwcclib;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 /**
  * Created by ankpal on 8/13/14.
  */
@@ -18,6 +20,7 @@ public class CreditCardUtilitiesTest extends TestCase {
         assertNotNull(CreditCardUtilities.CardIssuer.values());
     }
 
+    @Test
     public void testGetCardIssuer() {
         //valid first 4 digits
         assertEquals(CreditCardUtilities.getCardIssuer("4111"), CreditCardUtilities.CardIssuer.VISA);
@@ -34,6 +37,7 @@ public class CreditCardUtilitiesTest extends TestCase {
 
     }
 
+    @Test
     public void testIsValidUsingLuhn() {
         //valid JCB
         assertTrue(CreditCardUtilities.isValidUsingLuhn("3088647942200780"));
@@ -42,6 +46,7 @@ public class CreditCardUtilitiesTest extends TestCase {
 
     }
 
+    @Test
     public void testIsValidCreditCard() {
         //valid credit cards
         assertTrue(CreditCardUtilities.isValidCreditCard("4539630110965791"));
@@ -57,6 +62,7 @@ public class CreditCardUtilitiesTest extends TestCase {
         assertFalse(CreditCardUtilities.isValidCreditCard("3088647942200780"));
     }
 
+    @Test
     public void testGetCleanString() {
         // test a formatted credit card like string
         String cleanString = CreditCardUtilities.getCleanString("1111 1111 1111 1111");
