@@ -13,7 +13,6 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.EditText;
 
@@ -189,7 +188,6 @@ public class CreditCardNumberEditField extends EditText {
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            Log.d(TAG, "before | start: " + start + " | count: " + count + " | after: " + after);
             // store the cursor start location
             mStart = start;
         }
@@ -217,7 +215,6 @@ public class CreditCardNumberEditField extends EditText {
             if (mStart > 0) {
                 String goodString = new String(s.toString().trim());
                 goodString = CreditCardUtilities.getCleanString(goodString);
-                Log.d(TAG, "Replacing: " + s + " with: " + goodString);
                 s.replace(0, s.length(), goodString, 0, goodString.length());
             }
         }
