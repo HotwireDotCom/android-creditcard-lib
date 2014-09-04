@@ -275,8 +275,7 @@ public final class CreditCardUtilities {
         if (original == null || original.isEmpty()) {
             return EMPTY_STRING;
         }
-        String sanitized = original.trim();
 
-        return sanitized.replaceAll(REGEX_WHITESPACE, EMPTY_STRING);
+        return original.replaceAll(REGEX_WHITESPACE, EMPTY_STRING);
     }
 }
