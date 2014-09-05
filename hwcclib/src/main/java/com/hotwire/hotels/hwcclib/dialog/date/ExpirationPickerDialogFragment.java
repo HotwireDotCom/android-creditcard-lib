@@ -11,8 +11,10 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.NumberPicker;
 
 import com.hotwire.hotels.hwcclib.R;
@@ -45,7 +47,6 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     private int mTitleResource;
     private int mMonthPickerValue;
     private int mYearPickerValue;
-
     /**
      *
      */
@@ -275,13 +276,21 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Date date = buildDate();
-                callPositiveListener(date);
-                dialog.dismiss();
+                positiveClick(dialog);
             }
         };
 
         return listener;
+    }
+
+    /**
+     * Used for unit testing
+     * @param dialog
+     */
+    public void positiveClick(DialogInterface dialog) {
+        Date date = buildDate();
+        callPositiveListener(date);
+        dialog.dismiss();
     }
 
     /**
@@ -292,12 +301,20 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                callNegativeListener();
-                dialog.dismiss();
+                neutralClick(dialog);
             }
         };
 
         return listener;
+    }
+
+    /**
+     * Used for unit testing
+     * @param dialog
+     */
+    public void neutralClick(DialogInterface dialog) {
+        callNegativeListener();
+        dialog.dismiss();
     }
 
     /**
@@ -339,5 +356,17 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
             listOfYears.add(String.valueOf(cal.get(Calendar.YEAR) + i));
         }
         return listOfYears.toArray(new String[]{});
+    }
+
+    /******************************
+     * Methods for unit testing
+     ******************************/
+
+    public NumberPicker getNumberPickerYear() {
+        return mNumberPickerYear;
+    }
+
+    public NumberPicker getNumberPickerMonth() {
+        return mNumberPickerMonth;
     }
 }

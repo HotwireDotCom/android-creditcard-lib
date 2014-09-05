@@ -7,9 +7,9 @@ import java.util.Date;
  */
 public class CreditCardModel {
 
-    private String mCreditCardNumber;
-    private Date mExpirationDate;
-    private String mSecurityCode;
+    protected String mCreditCardNumber;
+    protected Date mExpirationDate;
+    protected String mSecurityCode;
 
     public CreditCardModel(String creditCardNumber, Date expirationDate, String securityCode) {
         mCreditCardNumber = creditCardNumber;
@@ -27,6 +27,14 @@ public class CreditCardModel {
 
     /**
      *
+     * @param creditCardNumber
+     */
+    public void setCreditCardNumber(String creditCardNumber) {
+        mCreditCardNumber = creditCardNumber;
+    }
+
+    /**
+     *
      * @return
      */
     public Date getExpirationDate() {
@@ -35,9 +43,25 @@ public class CreditCardModel {
 
     /**
      *
+     * @param expirationDate
+     */
+    public void setExpirationDate(Date expirationDate) {
+        mExpirationDate = expirationDate;
+    }
+
+    /**
+     *
      * @return
      */
     public String getSecurityCode() {
         return mSecurityCode;
+    }
+
+    /**
+     *
+     * @param securityCode
+     */
+    public void setSecurityCode(String securityCode) {
+        mSecurityCode = securityCode;
     }
 }

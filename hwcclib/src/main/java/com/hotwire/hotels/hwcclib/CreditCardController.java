@@ -61,7 +61,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     /**
      *
      */
-    private enum CreditCardEvent {
+    public enum CreditCardEvent {
         NUMBER_FIELD_ON_FOCUS_EVENT,
         CREDIT_CARD_NUMBER_VALIDATED_EVENT,
         EXP_DATE_FIELD_ON_FOCUS_EVENT,
@@ -794,5 +794,17 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
             }
         });
         mTransitionMap.put(CreditCardState.SEC_CODE_FIELD_EDIT_STATE, secCodeEditStateMap);
+    }
+
+    /******************************
+     * Methods for unit testing
+     ******************************/
+
+    public CreditCardState getCurrentState() {
+        return mCurrentState;
+    }
+
+    public Date getExpirationDate() {
+        return mExpirationDate;
     }
 }
