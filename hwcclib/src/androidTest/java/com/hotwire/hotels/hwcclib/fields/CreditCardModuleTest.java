@@ -32,8 +32,7 @@ public class CreditCardModuleTest {
 
     @Test
     public void creditCardModuleInflationTest() {
-        Activity activity = Robolectric.buildActivity(Activity.class).create().get();
-        CreditCardModule creditCardModule = getCreditCardModule(activity);
+        CreditCardModule creditCardModule = new CreditCardModule(Robolectric.application);
 
         CreditCardNumberEditField creditCardNumberEditField = creditCardModule.getCreditCardNumberEditField();
         CreditCardExpirationEditField creditCardExpirationEditField = creditCardModule.getCreditCardExpirationEditField();
@@ -45,12 +44,15 @@ public class CreditCardModuleTest {
         Assertions.assertThat(creditCardNumberEditField).isNotNull();
         Assertions.assertThat(creditCardExpirationEditField).isNotNull();
         Assertions.assertThat(creditCardSecurityCodeEditField).isNotNull();
+
+        Assertions.assertThat(creditCardNumberEditField.getVisibility()).isEqualTo(View.VISIBLE);
+        Assertions.assertThat(creditCardExpirationEditField.getVisibility()).isEqualTo(View.VISIBLE);
+        Assertions.assertThat(creditCardSecurityCodeEditField.getVisibility()).isEqualTo(View.VISIBLE);
     }
 
     @Test
     public void creditCardModuleValidVisaTest() {
-        Activity activity = Robolectric.buildActivity(Activity.class).create().get();
-        CreditCardModule creditCardModule = getCreditCardModule(activity);
+        CreditCardModule creditCardModule = new CreditCardModule(Robolectric.application);
 
         CreditCardNumberEditField creditCardNumberEditField = creditCardModule.getCreditCardNumberEditField();
         CreditCardExpirationEditField creditCardExpirationEditField = creditCardModule.getCreditCardExpirationEditField();
@@ -60,8 +62,12 @@ public class CreditCardModuleTest {
         Assertions.assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
         Assertions.assertThat(creditCardSecurityCodeEditField.hasFocus()).isFalse();
 
+        creditCardNumberEditField.performClick();
+        creditCardNumberEditField.requestFocus();
         enterText(creditCardNumberEditField, "4111");
+//        enterText(creditCardNumberEditField, "3799");
         Assertions.assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("4111");
+//        Assertions.assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("3799");
 
         InputFilter[] filters = creditCardNumberEditField.getFilters();
         Assertions.assertThat(filters).isNotNull();
@@ -69,8 +75,8 @@ public class CreditCardModuleTest {
             Assertions.assertThat(filter.getClass().getSimpleName()).isEqualTo(CreditCardInputFilter.class.getSimpleName());
         }
 
-        // TODO: Why does this work properly?
-        //Assertions.assertThat(creditCardSecurityCodeEditField.isEnabled()).isTrue();
+        // TODO: Why doesn't this work properly?
+        Assertions.assertThat(creditCardSecurityCodeEditField.isEnabled()).isTrue();
         filters = creditCardSecurityCodeEditField.getFilters();
         Assertions.assertThat(filters).isNotNull();
         for (InputFilter filter : filters) {
@@ -81,21 +87,17 @@ public class CreditCardModuleTest {
         Assertions.assertThat(transformationMethod.getClass().getSimpleName()).isEqualTo(PasswordTransformationMethod.class.getSimpleName());
 
         enterText(creditCardNumberEditField, "111111111111");
+//        enterText(creditCardNumberEditField, "99999999999");
         Assertions.assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("4111111111111111");
-        // TODO: Why does this work properly?
-        //Assertions.assertThat(creditCardNumberEditField.getCurrentTextColor()).isEqualTo(activity.getResources().getColor(R.color.field_text_color_default));
+//        Assertions.assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("379999999999999");
+System.out.println("******* FORMATTED: " + creditCardNumberEditField.getText());
+        // TODO: Why doesn't this work properly?
+        Assertions.assertThat(creditCardNumberEditField.getCurrentTextColor()).isEqualTo(Robolectric.application.getResources().getColor(R.color.field_text_color_default));
     }
 
     private void enterText(EditText editText, String text) {
         for (int i = 0; i < text.length(); i++) {
             editText.append(String.valueOf(text.charAt(i)));
         }
-    }
-
-    private CreditCardModule getCreditCardModule(Activity activity) {
-        LayoutInflater inflater = activity.getLayoutInflater();
-        View layout = inflater.inflate(R.layout.test_credit_card_layout, null);
-
-        return (CreditCardModule) layout.findViewById(R.id.credit_card_module);
     }
 }
