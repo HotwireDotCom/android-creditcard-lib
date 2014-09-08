@@ -3,7 +3,7 @@ package com.hotwire.hotels.hwcclib;
 import java.util.Date;
 
 /**
- * Created by a-elpark on 8/22/14.
+ * Created by elpark on 8/22/14.
  */
 public class CreditCardModel {
 

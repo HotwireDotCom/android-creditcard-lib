@@ -822,24 +822,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         mDatePickerOpen = open;
     }
 
-    public boolean hasNumberBeenEntered() {
-        return mNumberTextHasBeenEntered;
-    }
-
     public boolean isDatePickerOpen() {
         return mDatePickerOpen;
     }
-
-    public boolean isNumberCompleted() {
-        return mNumberCompleted;
-    }
-
-    public boolean isExpDateCompleted() {
-        return mExpDateCompleted;
-    }
-
-    public boolean isSecCodeCompleted() {
-        return mSecCodeCompleted;
-    }
-
 }
