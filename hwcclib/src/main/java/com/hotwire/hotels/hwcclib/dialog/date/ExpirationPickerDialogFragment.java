@@ -39,21 +39,12 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     private NumberPicker mNumberPickerMonth;
     private NumberPicker mNumberPickerYear;
 
-    DatePickerDestroyedListener mDatePickerDestroyedListener;
-
     private String[] mDisplayMonths;
     private String[] mDisplayYears;
 
     private int mTitleResource;
     private int mMonthPickerValue;
     private int mYearPickerValue;
-    /**
-     *
-     */
-    public interface DatePickerDestroyedListener {
-        void datePickerDestroyed();
-    }
-
     /**
      *
      */
@@ -162,8 +153,8 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
         if (getDialog() != null && getRetainInstance()) {
             getDialog().setDismissMessage(null);
         }
-        if (mDatePickerDestroyedListener != null) {
-            mDatePickerDestroyedListener.datePickerDestroyed();
+        if (mExpirationPickerListener != null) {
+            mExpirationPickerListener.onDestroy();
         }
         super.onDestroyView();
     }
@@ -171,10 +162,6 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     /******************************
      * BEGIN CUSTOM METHODS
      ******************************/
-
-    public void setDatePickerDestroyedListener(DatePickerDestroyedListener datePickerDestroyedListener) {
-        mDatePickerDestroyedListener = datePickerDestroyedListener;
-    }
 
     public void setDatePickerListener(ExpirationPickerListener listener) {
         if (listener != null) {

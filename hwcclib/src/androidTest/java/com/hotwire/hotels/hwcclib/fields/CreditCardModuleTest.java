@@ -635,7 +635,7 @@ public class CreditCardModuleTest {
     public void stateMachineIdleStateTest() {
     /*
     IDLE_STATE:
-        CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT:
+        CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT:
             Set State: NUMBER_FIELD_FOCUSED_STATE
             function evaluateCreditCardNumber()
 
@@ -668,7 +668,7 @@ public class CreditCardModuleTest {
         CreditCardController creditCardController = creditCardModule.getCreditCardController();
 
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
-        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT);
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
 
 
@@ -743,7 +743,7 @@ public class CreditCardModuleTest {
         CreditCardController creditCardController = creditCardModule.getCreditCardController();
 
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
-        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT);
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
 
         creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
@@ -751,7 +751,7 @@ public class CreditCardModuleTest {
 
         creditCardController.handleEvent(CreditCardController.CreditCardEvent.FOCUS_LOST_EVENT);
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
-        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT);
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
 
         creditCardController.handleEvent(CreditCardController.CreditCardEvent.FOCUS_LOST_EVENT);
@@ -782,7 +782,7 @@ public class CreditCardModuleTest {
         CreditCardController creditCardController = creditCardModule.getCreditCardController();
 
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
-        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT);
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
 
         creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
@@ -801,7 +801,7 @@ public class CreditCardModuleTest {
         creditCardController = creditCardModule.getCreditCardController();
 
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
-        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT);
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
 
         creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
@@ -817,7 +817,7 @@ public class CreditCardModuleTest {
         creditCardController = creditCardModule.getCreditCardController();
 
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
-        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT);
         assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
 
         creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
