@@ -14,4 +14,5 @@ import java.util.Date;
 public interface ExpirationPickerListener {
     void onDialogPickerCanceled();
     void onExpirationDateSelected(Date selectedDate);
+    void onDestroy();
 }

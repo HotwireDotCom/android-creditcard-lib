@@ -8,7 +8,6 @@ package com.hotwire.hotels.hwcclib.filter;
 
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.util.Log;
 
 import com.hotwire.hotels.hwcclib.CreditCardUtilities;
 
@@ -55,8 +54,6 @@ public class CreditCardInputFilter extends InputFilter.LengthFilter {
 
         // if sequence is null, we have not hit the filter to limit length, apply credit card mask logic
         if (sequence == null) {
-            Log.v(TAG, "offset: " + mOffset + " | source: " + source + " | start: " + start + " | end: " + end +
-                                              " | dest: " + dest + " | dstart: " + dstart + " | dend: " + dend);
             StringBuilder builder = new StringBuilder();
             // used for keeping track of how many spaces were added when a number is pasted to the field
             int insertedFormatSpaces = 0;
@@ -69,11 +66,9 @@ public class CreditCardInputFilter extends InputFilter.LengthFilter {
             if (source.length() == cleanDest.length()) {
                 length = 0;
             }
-            Log.v(TAG, "length: " + length);
             for (int i = start; i < end; i++) {
                 int check = length + i + mOffset + insertedFormatSpaces;
                 int modCheck = check % mMod;
-                Log.v(TAG, "i: " + i + " | added: " + insertedFormatSpaces + " | check: " + check);
 
                 // invalid characters do not move the cursor forward. spaces when not input by the input filter
                 // do not move the cursor forward

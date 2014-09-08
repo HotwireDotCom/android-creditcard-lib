@@ -18,6 +18,7 @@ import android.widget.EditText;
 import com.hotwire.hotels.hwcclib.CreditCardUtilities;
 import com.hotwire.hotels.hwcclib.R;
 import com.hotwire.hotels.hwcclib.animation.drawable.AnimatedScaleDrawable;
+import com.hotwire.hotels.hwcclib.filter.SecurityCodeInputFilter;
 
 /**
  * Created by ahobbs on 8/8/14.
@@ -72,7 +73,9 @@ public class CreditCardSecurityCodeEditField extends EditText {
          * transformation method, the user to input a password but be shown the digit currently being entered before
          * masking like a password
          */
-        setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
+                        InputType.TYPE_CLASS_NUMBER |
+                        InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         setSingleLine(true); // must set single line before transformation method
         setTransformationMethod(PasswordTransformationMethod.getInstance());
 
@@ -91,7 +94,7 @@ public class CreditCardSecurityCodeEditField extends EditText {
      *
      * @param newSecurityCodeResId
      */
-    public void setCardTypeForField(int newSecurityCodeResId) {
+    private void setCardTypeForField(int newSecurityCodeResId) {
         if (newSecurityCodeResId != NO_RES_ID) {
             Drawable newFieldDrawable = mContext.getResources().getDrawable(newSecurityCodeResId);
             mAnimatedScaleDrawable.startDrawableTransition(newFieldDrawable);
@@ -127,22 +130,32 @@ public class CreditCardSecurityCodeEditField extends EditText {
     /**
      *
      * @param cardIssuer
+     * @param shouldAnimate
      */
-    public void updateCardType(CreditCardUtilities.CardIssuer cardIssuer) {
-        int secResId;
-        if (cardIssuer == CreditCardUtilities.CardIssuer.INVALID) {
-            secResId = R.drawable.ic_security_code_disabled;
-        }
-        else if (cardIssuer.getSecurityLength() == CreditCardUtilities.SECURITY_LENGTH_3) {
-            secResId = R.drawable.ic_security_code_3;
+    public void updateCardType(CreditCardUtilities.CardIssuer cardIssuer, boolean shouldAnimate) {
+        int secResId = cardIssuer.getSecurityIconResourceId();
+        if (shouldAnimate) {
+            setCardTypeForField(secResId);
         }
         else {
-            secResId = R.drawable.ic_security_code_4;
+            setSecurityResourceImage(secResId);
         }
-        setCardTypeForField(secResId);
 
-        InputFilter secCodeFilter = new InputFilter.LengthFilter(cardIssuer.getSecurityLength());
+        InputFilter secCodeFilter = new SecurityCodeInputFilter(cardIssuer.getSecurityLength());
         setFilters(new InputFilter[]{secCodeFilter});
+    }
+
+    /**
+     * This is intended to be used only by the controller's restoreInstanceState method in order
+     * to restore the appropriate security code image.
+     * @param secCodeResId
+     */
+    private void setSecurityResourceImage(int secCodeResId) {
+        mAnimatedScaleDrawable.setDrawable(mContext.getResources().getDrawable(secCodeResId));
+        setCompoundDrawablesWithIntrinsicBounds(mAnimatedScaleDrawable,
+                                                null,
+                                                null,
+                                                null);
     }
 
     /**

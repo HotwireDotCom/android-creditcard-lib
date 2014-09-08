@@ -9,7 +9,6 @@ package com.hotwire.hotels.hwcclib.fields;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -39,8 +38,7 @@ public class CreditCardModule extends LinearLayout {
      * @param context
      */
     public CreditCardModule(Context context) {
-        super(context);
-        init(context);
+        this(context, null);
     }
 
     /**
@@ -49,8 +47,7 @@ public class CreditCardModule extends LinearLayout {
      * @param attrs
      */
     public CreditCardModule(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+        this(context, attrs, 0);
     }
 
     /**
@@ -66,6 +63,24 @@ public class CreditCardModule extends LinearLayout {
 
     /**
      *
+     * @param creditCardModelCompleteListener
+     */
+    public void setCreditCardModelCompleteListener(CreditCardController.CreditCardModelCompleteListener
+                                                           creditCardModelCompleteListener) {
+        mCreditCardController.setCreditCardModelCompleteListener(creditCardModelCompleteListener);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isComplete() {
+        return mCreditCardController.isComplete();
+    }
+
+    /**
+     *
+     * @param context
      */
     private void init(Context context) {
         setOrientation(LinearLayout.VERTICAL);
@@ -170,5 +185,21 @@ public class CreditCardModule extends LinearLayout {
 
     public void onRestoreSavedInstanceState(Bundle savedInstanceState) {
         mCreditCardController.onRestoreSavedInstanceState(savedInstanceState);
+    }
+
+    /******************************
+     * Unit Test Helper Methods
+     ******************************/
+
+    CreditCardNumberEditField getCreditCardNumberEditField() {
+        return mCreditCardNumber;
+    }
+
+    CreditCardExpirationEditField getCreditCardExpirationEditField() {
+        return mCreditCardExpiration;
+    }
+
+    CreditCardSecurityCodeEditField getCreditCardSecurityCodeEditField() {
+        return mCreditCardSecurityCode;
     }
 }

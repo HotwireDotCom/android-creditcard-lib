@@ -29,4 +29,12 @@
         android:layout_below="@id/save_button"
         android:text="Status: Incomplete."/>
 
+    <TextView
+        android:id="@+id/reporting_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:layout_below="@id/status_text_view"
+        android:text="Nothing to see here."/>
+
 </RelativeLayout>

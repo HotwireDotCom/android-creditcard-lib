@@ -8,21 +8,24 @@ package com.hotwire.hotels.hwcreditcardlib;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.hotwire.hotels.hwcclib.CreditCardController;
 import com.hotwire.hotels.hwcclib.CreditCardModel;
 import com.hotwire.hotels.hwcclib.fields.CreditCardModule;
 
 /**
  *
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements CreditCardController.CreditCardModelCompleteListener {
 
     CreditCardModule creditCardModule;
+    TextView reportingTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +38,17 @@ public class MainActivity extends Activity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CreditCardModel ccm = creditCardModule.getCreditCardController().save();
-                if (ccm != null) {
+                boolean complete = creditCardModule.getCreditCardController().isComplete();
+                if (complete) {
                     statusTextView.setText("Status: Complete.");
                 } else {
                     statusTextView.setText("Status: Incomplete.");
                 }
             }
         });
+
+        creditCardModule.setCreditCardModelCompleteListener(this);
+        reportingTextView = (TextView) findViewById(R.id.reporting_text_view);
     }
 
     @Override
@@ -75,5 +81,17 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreditCardModelComplete(CreditCardModel creditCardModel) {
+        reportingTextView.setText("All necessary credit card information has been entered.\nRock it like a hurricane!");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                reportingTextView.setText("Keep calm and carry on.");
+            }
+        }, 10000);
     }
 }
