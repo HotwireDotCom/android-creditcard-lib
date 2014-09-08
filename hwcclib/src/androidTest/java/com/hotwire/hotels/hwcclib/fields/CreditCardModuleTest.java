@@ -170,6 +170,334 @@ public class CreditCardModuleTest {
 
     }
 
+
+
+    private void print(String str) {
+        System.out.println("\n\n"+str+"\n\n");
+    }
+
+    @Test
+    public void loadSavedCreditCardInfo() {
+        Activity testActivity = Robolectric.buildActivity(Activity.class).create().start().visible().get();
+
+        CreditCardModule creditCardModule = new CreditCardModule(testActivity);
+        CreditCardNumberEditField creditCardNumberEditField = creditCardModule.getCreditCardNumberEditField();
+        CreditCardExpirationEditField creditCardExpirationEditField = creditCardModule.getCreditCardExpirationEditField();
+        CreditCardSecurityCodeEditField creditCardSecurityCodeEditField = creditCardModule.getCreditCardSecurityCodeEditField();
+        CreditCardController creditCardController = creditCardModule.getCreditCardController();
+
+        String testCreditCardNumber = "4111111111111111";
+        Date testDate = new Date();
+        String testSecurityCode = "111";
+
+
+        CreditCardModel testCreditCardModel = new CreditCardModel(testCreditCardNumber, testDate, testSecurityCode);
+    }
+
+
+    @Test
+    public void stateMachineIdleStateTest() {
+    /*
+    IDLE_STATE:
+        CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT:
+            Set State: NUMBER_FIELD_FOCUSED_STATE
+            function evaluateCreditCardNumber()
+
+        EXP_DATE_FIELD_ON_FOCUS_EVENT:
+            Set State: DATE_PICKER_OPEN_STATE
+            happy path is broken
+            openDatePicker()
+
+        SEC_CODE_FIELD_ON_FOCUS_EVENT:
+            Set State: SEC_CODE_FIELD_FOCUSED_STATE
+            happy path is broken
+            demask security code text
+            evaluateSecurityCode()
+
+        TEXT_CHANGED_EVENT:
+            logic <CreditCardNumberEditField has focus>:
+                Set State: NUMBER_FIELD_EDIT_STATE
+                record that text has been entered into the CreditCardNumberEditField
+                evaluateCreditCardNumber()
+            <SecCodeEditField has focus>:
+                Set State: SEC_CODE_FIELD_EDIT_STATE
+                evaluateSecurityCode()
+            <ExpDateEditField has focus>:
+                Set State: DATE_PICKER_OPEN_STATE
+                openDatePicker()
+     */
+        Activity testActivity = Robolectric.buildActivity(Activity.class).create().start().visible().get();
+
+        CreditCardModule creditCardModule = new CreditCardModule(testActivity);
+        CreditCardController creditCardController = creditCardModule.getCreditCardController();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
+
+
+        creditCardModule = new CreditCardModule(testActivity);
+        creditCardController = creditCardModule.getCreditCardController();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.EXP_DATE_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.DATE_PICKER_OPEN_STATE);
+
+
+        creditCardModule = new CreditCardModule(testActivity);
+        creditCardController = creditCardModule.getCreditCardController();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.SEC_CODE_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.SEC_CODE_FIELD_FOCUSED_STATE);
+
+
+        creditCardModule = new CreditCardModule(testActivity);
+        creditCardController = creditCardModule.getCreditCardController();
+        CreditCardNumberEditField creditCardNumberEditField = creditCardModule.getCreditCardNumberEditField();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardNumberEditField.requestFocus();
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.FOCUS_LOST_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_EDIT_STATE);
+
+
+        creditCardModule = new CreditCardModule(testActivity);
+        creditCardController = creditCardModule.getCreditCardController();
+        CreditCardSecurityCodeEditField creditCardSecurityCodeEditField = creditCardModule.getCreditCardSecurityCodeEditField();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardSecurityCodeEditField.setEnabled(true);
+        creditCardSecurityCodeEditField.setFocusable(true);
+        creditCardSecurityCodeEditField.setFocusableInTouchMode(true);
+        creditCardSecurityCodeEditField.requestFocus();
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.SEC_CODE_FIELD_EDIT_STATE);
+
+
+        creditCardModule = new CreditCardModule(testActivity);
+        creditCardController = creditCardModule.getCreditCardController();
+        CreditCardExpirationEditField creditCardExpirationEditField = creditCardModule.getCreditCardExpirationEditField();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardExpirationEditField.requestFocus();
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.DATE_PICKER_OPEN_STATE);
+
+    }
+
+    @Test
+    public void stateMachineNumberFieldFocusedStateTest() {
+        /*
+        NUMBER_FIELD_FOCUSED_STATE:
+            TEXT_CHANGED_EVENT:
+                Set State: NUMBER_FIELD_EDIT_STATE
+                record that text has been entered into the CreditCardNumberEditField
+                evaluateCreditCardNumber()
+            FOCUS_LOST_EVENT:
+                happy path is broken
+                Set State: IDLE_STATE
+                evaluateCreditCardNumber()
+         */
+        Activity testActivity = Robolectric.buildActivity(Activity.class).create().start().visible().get();
+
+        CreditCardModule creditCardModule = new CreditCardModule(testActivity);
+        CreditCardController creditCardController = creditCardModule.getCreditCardController();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_EDIT_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.FOCUS_LOST_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.FOCUS_LOST_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+
+    }
+
+    @Test
+    public void stateMachineNumberEditStateTest() {
+        /*
+        NUMBER_FIELD_EDIT_STATE:
+            TEXT_CHANGED_EVENT:
+                evaluateCreditCardNumber()
+            CREDIT_CARD_NUMBER_VALIDATED_EVENT:
+                <happy path is not broken>:
+                    Set State: DATE_PICKER_OPEN_STATE
+                    openDatePicker()
+                <happy path is broken>:
+                    Set State: IDLE_STATE
+            FOCUS_LOST_EVENT:
+                happy path is broken
+                Set State: IDLE_STATE
+                evaluateCreditCardNumber()
+         */
+        Activity testActivity = Robolectric.buildActivity(Activity.class).create().start().visible().get();
+
+        CreditCardModule creditCardModule = new CreditCardModule(testActivity);
+        CreditCardController creditCardController = creditCardModule.getCreditCardController();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_EDIT_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_EDIT_STATE);
+
+        creditCardController.setHappyPathBroken(false);
+        assertThat(!creditCardController.isHappyPathBroken());
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_CARD_NUMBER_VALIDATED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.DATE_PICKER_OPEN_STATE);
+
+
+        creditCardModule = new CreditCardModule(testActivity);
+        creditCardController = creditCardModule.getCreditCardController();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_EDIT_STATE);
+
+        creditCardController.setHappyPathBroken(true);
+        assertThat(creditCardController.isHappyPathBroken());
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_CARD_NUMBER_VALIDATED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+
+
+        creditCardModule = new CreditCardModule(testActivity);
+        creditCardController = creditCardModule.getCreditCardController();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CREDIT_NUMBER_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.NUMBER_FIELD_EDIT_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.FOCUS_LOST_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+
+    }
+
+    @Test
+    public void stateMachineDatePickerOpenStateTest() {
+        /*
+        DATE_PICKER_OPEN_STATE:
+            CLOSE_DATE_PICKER_EVENT:
+                Set State: IDLE_STATE
+            FOCUS_LOST_EVENT:
+                <date picker is not open>:
+                    happy path is broken
+                    Set State: IDLE_STATE
+            EXP_DATE_FIELD_ON_FOCUS_EVENT:
+                <date picker is not open>:
+                    openDatePicker()
+         */
+        Activity testActivity = Robolectric.buildActivity(Activity.class).create().start().visible().get();
+
+        CreditCardModule creditCardModule = new CreditCardModule(testActivity);
+        CreditCardController creditCardController = creditCardModule.getCreditCardController();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.EXP_DATE_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.DATE_PICKER_OPEN_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.CLOSE_DATE_PICKER_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.EXP_DATE_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.DATE_PICKER_OPEN_STATE);
+
+        creditCardController.setDatePickerOpen(false);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.FOCUS_LOST_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.EXP_DATE_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.DATE_PICKER_OPEN_STATE);
+
+        creditCardController.setDatePickerOpen(false);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.EXP_DATE_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.DATE_PICKER_OPEN_STATE);
+        assertThat(creditCardController.isDatePickerOpen());
+    }
+
+    @Test
+    public void stateMachineSecurityCodeFieldFocusedStateTest() {
+        /*
+        SEC_CODE_FIELD_FOCUSED_STATE:
+            TEXT_CHANGED_EVENT:
+                Set State: SEC_CODE_FIELD_EDIT_STATE
+                evaluateSecurityCode();
+            FOCUS_LOST_EVENT:
+                happy path is broken
+                mask text in the SecurityCodeEditField
+                Set State: IDLE_STATE
+                evaluateSecurityCode()
+         */
+        Activity testActivity = Robolectric.buildActivity(Activity.class).create().start().visible().get();
+
+        CreditCardModule creditCardModule = new CreditCardModule(testActivity);
+        CreditCardController creditCardController = creditCardModule.getCreditCardController();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.SEC_CODE_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.SEC_CODE_FIELD_FOCUSED_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.FOCUS_LOST_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.SEC_CODE_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.SEC_CODE_FIELD_FOCUSED_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.SEC_CODE_FIELD_EDIT_STATE);
+
+    }
+
+    @Test
+    public void stateMachineSecurityCodeEditStateTest() {
+        /*
+        SEC_CODE_FIELD_EDIT_STATE:
+            TEXT_CHANGED_EVENT:
+                evaluateSecurityCode()
+            FOCUS_LOST_EVENT:
+                happy path is broken
+                mask text in the SecurityCodeEditField
+                Set State: IDLE_STATE
+                evaluateSecurityCode()
+         */
+        Activity testActivity = Robolectric.buildActivity(Activity.class).create().start().visible().get();
+
+        CreditCardModule creditCardModule = new CreditCardModule(testActivity);
+        CreditCardController creditCardController = creditCardModule.getCreditCardController();
+
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.SEC_CODE_FIELD_ON_FOCUS_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.SEC_CODE_FIELD_FOCUSED_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.SEC_CODE_FIELD_EDIT_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.TEXT_CHANGED_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.SEC_CODE_FIELD_EDIT_STATE);
+
+        creditCardController.handleEvent(CreditCardController.CreditCardEvent.FOCUS_LOST_EVENT);
+        assertThat(creditCardController.getCurrentState()).isEqualTo(CreditCardController.CreditCardState.IDLE_STATE);
+    }
+
     private void enterText(EditText editText, String text) {
         for (int i = 0; i < text.length(); i++) {
             editText.append(String.valueOf(text.charAt(i)));
