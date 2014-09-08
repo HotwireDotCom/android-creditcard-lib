@@ -36,12 +36,11 @@ import java.util.Date;
  * Created by ahobbs on 8/29/14.
  */
 @RunWith(RobolectricTestRunner.class)
-// TODO: this needs to be in a custom runner
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
+@Config(manifest = "src/main/AndroidManifest.xml")
 public class CreditCardModuleTest {
 
     @Test
-    public void creditCardModuleInflationTest() {
+    public void creditCardModuleSmokeTest() {
         Activity activity = Robolectric.buildActivity(Activity.class).create().resume().start().visible().get();
         CreditCardModule creditCardModule = new CreditCardModule(activity);
 
@@ -72,19 +71,15 @@ public class CreditCardModuleTest {
         CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
                 creditCardModule.getCreditCardSecurityCodeEditField();
 
-        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
-
         creditCardNumberEditField.requestFocus();
-
+        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.INVALID);
 
         enterText(creditCardNumberEditField, "4111");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("4111");
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.VISA);
 
         InputFilter[] filters = creditCardNumberEditField.getFilters();
-
         assertThat(filters).isNotNull();
 
         for (InputFilter filter : filters) {
@@ -93,9 +88,7 @@ public class CreditCardModuleTest {
         }
 
         assertThat(creditCardSecurityCodeEditField.isEnabled()).isTrue();
-
         filters = creditCardSecurityCodeEditField.getFilters();
-
         assertThat(filters).isNotNull();
 
         for (InputFilter filter : filters) {
@@ -109,7 +102,6 @@ public class CreditCardModuleTest {
                 .isEqualTo(PasswordTransformationMethod.class.getSimpleName());
 
         enterText(creditCardNumberEditField, "111111111111");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("4111111111111111");
         assertThat(creditCardNumberEditField.getText().toString()).isEqualTo("4111 1111 1111 1111");
         assertThat(creditCardNumberEditField.getCurrentTextColor())
@@ -131,20 +123,15 @@ public class CreditCardModuleTest {
         CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
                 creditCardModule.getCreditCardSecurityCodeEditField();
 
-        // check security code stuff
-        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
-
         creditCardNumberEditField.requestFocus();
-
+        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.INVALID);
 
         enterText(creditCardNumberEditField, "5149");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("5149");
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.MASTERCARD);
 
         InputFilter[] filters = creditCardNumberEditField.getFilters();
-
         assertThat(filters).isNotNull();
 
         for (InputFilter filter : filters) {
@@ -153,16 +140,13 @@ public class CreditCardModuleTest {
         }
 
         assertThat(creditCardSecurityCodeEditField.isEnabled()).isTrue();
-
         filters = creditCardSecurityCodeEditField.getFilters();
-
         assertThat(filters).isNotNull();
 
         for (InputFilter filter : filters) {
             assertThat(filter.getClass().getSimpleName())
                     .isEqualTo(SecurityCodeInputFilter.class.getSimpleName());
         }
-
         TransformationMethod transformationMethod = creditCardSecurityCodeEditField.getTransformationMethod();
 
         assertThat(transformationMethod).isNotNull();
@@ -170,7 +154,6 @@ public class CreditCardModuleTest {
                 .isEqualTo(PasswordTransformationMethod.class.getSimpleName());
 
         enterText(creditCardNumberEditField, "955873292557");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("5149955873292557");
         assertThat(creditCardNumberEditField.getText().toString()).isEqualTo("5149 9558 7329 2557");
         assertThat(creditCardNumberEditField.getCurrentTextColor())
@@ -192,19 +175,15 @@ public class CreditCardModuleTest {
         CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
                 creditCardModule.getCreditCardSecurityCodeEditField();
 
-        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
-
         creditCardNumberEditField.requestFocus();
-
+        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.INVALID);
 
         enterText(creditCardNumberEditField, "6011");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("6011");
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.DISCOVER);
 
         InputFilter[] filters = creditCardNumberEditField.getFilters();
-
         assertThat(filters).isNotNull();
 
         for (InputFilter filter : filters) {
@@ -213,9 +192,7 @@ public class CreditCardModuleTest {
         }
 
         assertThat(creditCardSecurityCodeEditField.isEnabled()).isTrue();
-
         filters = creditCardSecurityCodeEditField.getFilters();
-
         assertThat(filters).isNotNull();
 
         for (InputFilter filter : filters) {
@@ -229,7 +206,6 @@ public class CreditCardModuleTest {
                 .isEqualTo(PasswordTransformationMethod.class.getSimpleName());
 
         enterText(creditCardNumberEditField, "478899975827");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("6011478899975827");
         assertThat(creditCardNumberEditField.getText().toString()).isEqualTo("6011 4788 9997 5827");
         assertThat(creditCardNumberEditField.getCurrentTextColor())
@@ -251,21 +227,16 @@ public class CreditCardModuleTest {
         CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
                 creditCardModule.getCreditCardSecurityCodeEditField();
 
-        // check security code stuff
-        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
-
         creditCardNumberEditField.requestFocus();
-
+        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.INVALID);
 
         enterText(creditCardNumberEditField, "3456");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("3456");
         assertThat(creditCardModule.getCardIssuer())
                 .isEqualTo(CreditCardUtilities.CardIssuer.AMERICANEXPRESS);
 
         InputFilter[] filters = creditCardNumberEditField.getFilters();
-
         assertThat(filters).isNotNull();
 
         for (InputFilter filter : filters) {
@@ -274,9 +245,7 @@ public class CreditCardModuleTest {
         }
 
         assertThat(creditCardSecurityCodeEditField.isEnabled()).isTrue();
-
         filters = creditCardSecurityCodeEditField.getFilters();
-
         assertThat(filters).isNotNull();
 
         for (InputFilter filter : filters) {
@@ -290,7 +259,6 @@ public class CreditCardModuleTest {
                 .isEqualTo(PasswordTransformationMethod.class.getSimpleName());
 
         enterText(creditCardNumberEditField, "15853052313");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("345615853052313");
         assertThat(creditCardNumberEditField.getText().toString()).isEqualTo("3456 158530 52313");
         assertThat(creditCardNumberEditField.getCurrentTextColor())
@@ -312,19 +280,15 @@ public class CreditCardModuleTest {
         CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
                 creditCardModule.getCreditCardSecurityCodeEditField();
 
-        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
-
         creditCardNumberEditField.requestFocus();
-
+        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.INVALID);
 
         enterText(creditCardNumberEditField, "4111");
-
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.VISA);
         assertThat(creditCardSecurityCodeEditField.isEnabled()).isTrue();
 
         enterText(creditCardNumberEditField, "211111111111");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("4111211111111111");
         assertThat(creditCardNumberEditField.getText().toString()).isEqualTo("4111 2111 1111 1111");
         assertThat(creditCardNumberEditField.getCurrentTextColor())
@@ -346,19 +310,15 @@ public class CreditCardModuleTest {
         CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
                 creditCardModule.getCreditCardSecurityCodeEditField();
 
-        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
-
         creditCardNumberEditField.requestFocus();
-
+        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.INVALID);
 
         enterText(creditCardNumberEditField, "5149");
-
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.MASTERCARD);
         assertThat(creditCardSecurityCodeEditField.isEnabled()).isTrue();
 
         enterText(creditCardNumberEditField, "955879292557");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("5149955879292557");
         assertThat(creditCardNumberEditField.getText().toString()).isEqualTo("5149 9558 7929 2557");
         assertThat(creditCardNumberEditField.getCurrentTextColor())
@@ -380,19 +340,15 @@ public class CreditCardModuleTest {
         CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
                 creditCardModule.getCreditCardSecurityCodeEditField();
 
-        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
-
         creditCardNumberEditField.requestFocus();
-
+        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.INVALID);
 
         enterText(creditCardNumberEditField, "6011");
-
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.DISCOVER);
         assertThat(creditCardSecurityCodeEditField.isEnabled()).isTrue();
 
         enterText(creditCardNumberEditField, "472899975827");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("6011472899975827");
         assertThat(creditCardNumberEditField.getText().toString()).isEqualTo("6011 4728 9997 5827");
         assertThat(creditCardNumberEditField.getCurrentTextColor())
@@ -414,20 +370,16 @@ public class CreditCardModuleTest {
         CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
                 creditCardModule.getCreditCardSecurityCodeEditField();
 
-        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
-
         creditCardNumberEditField.requestFocus();
-
+        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.INVALID);
 
         enterText(creditCardNumberEditField, "3456");
-
         assertThat(creditCardModule.getCardIssuer())
                 .isEqualTo(CreditCardUtilities.CardIssuer.AMERICANEXPRESS);
         assertThat(creditCardSecurityCodeEditField.isEnabled()).isTrue();
 
         enterText(creditCardNumberEditField, "75853052313");
-
         assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo("345675853052313");
         assertThat(creditCardNumberEditField.getText().toString()).isEqualTo("3456 758530 52313");
         assertThat(creditCardNumberEditField.getCurrentTextColor())
@@ -449,19 +401,15 @@ public class CreditCardModuleTest {
         CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
                 creditCardModule.getCreditCardSecurityCodeEditField();
 
-        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
-
         creditCardNumberEditField.requestFocus();
-
+        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.INVALID);
 
         enterText(creditCardNumberEditField, "4111");
-
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.VISA);
         assertThat(creditCardSecurityCodeEditField.isEnabled()).isTrue();
 
         creditCardNumberEditField.setText("");
-
         assertThat(creditCardModule.getCardIssuer()).isEqualTo(CreditCardUtilities.CardIssuer.INVALID);
         assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
     }
@@ -475,9 +423,8 @@ public class CreditCardModuleTest {
         CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
                 creditCardModule.getCreditCardSecurityCodeEditField();
 
-        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
-
         creditCardNumberEditField.requestFocus();
+        assertThat(creditCardSecurityCodeEditField.isEnabled()).isFalse();
 
         // Incomplete card number to prevent dialog from coming up
         enterText(creditCardNumberEditField, "411111111111111");
@@ -487,7 +434,6 @@ public class CreditCardModuleTest {
                 .isEqualTo(PasswordTransformationMethod.class.getSimpleName());
 
         creditCardSecurityCodeEditField.requestFocus();
-
         assertThat(creditCardSecurityCodeEditField.getTransformationMethod()).isNull();
     }
 
@@ -550,7 +496,6 @@ public class CreditCardModuleTest {
                 testCreditCardModel.getExpirationDate()).toString();
         assertThat(testDateString).isEqualTo(dateFieldString);
         assertThat(testCreditCardModel.getSecurityCode()).isEqualTo(testSecurityCode);
-
     }
 
     @Test
@@ -610,11 +555,11 @@ public class CreditCardModuleTest {
 
         // rebuild the activity, and restore instance using the same bundle passed to saveInstanceState
         testActivity = Robolectric.buildActivity(TestActivity.class).create()
-                .restoreInstanceState(bundle)
-                .start()
-                .resume()
-                .start()
-                .get();
+                                                                    .restoreInstanceState(bundle)
+                                                                    .start()
+                                                                    .resume()
+                                                                    .start()
+                                                                    .get();
         // re-obtain the module, views, and controller from the newly restored activity
         creditCardModule = testActivity.getCreditCardModule();
         creditCardNumberEditField = creditCardModule.getCreditCardNumberEditField();
@@ -630,6 +575,10 @@ public class CreditCardModuleTest {
         assertThat(creditCardController.isComplete());
     }
 
+    /**
+     * TestActivity that will call the onSaveInstanceState and onRestoreSavedInstanceState methods
+     * on the CreditCardModule when they are called on the activity
+     */
     static class TestActivity extends Activity {
         private CreditCardModule mCreditCardModule;
 
