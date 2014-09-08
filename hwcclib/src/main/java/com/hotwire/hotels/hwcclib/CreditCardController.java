@@ -608,6 +608,10 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
     }
 
+    public CreditCardUtilities.CardIssuer getCardIssuer() {
+        return mCardIssuer;
+    }
+
     /**
      * The transition table has been implemented as a HashMap. Its entries represent states where
      * the key is the CreditCardState and the value is the HashMap of all of the valid transitions

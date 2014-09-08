@@ -11,8 +11,8 @@ android {
 
     defaultConfig {
         applicationId "com.hotwire.hotels.hwcclib"
-        minSdkVersion 15
-        targetSdkVersion 19
+        minSdkVersion 11
+        targetSdkVersion 18
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
