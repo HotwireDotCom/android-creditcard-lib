@@ -81,29 +81,6 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     private static final String CREDIT_CARD_CONTROLLER_STATE_KEY = CreditCardController.class.getCanonicalName() +
             ".credit_card_controller_state_key";
 
-    private static final String CURRENT_STATE_KEY = CreditCardController.class.getCanonicalName() +
-            ".current_state_key";
-    private static final String CREDIT_CARD_NUMBER_TEXT_KEY = CreditCardController.class.getCanonicalName() +
-            ".credit_card_number_text_key";
-    private static final String EXP_DATE_KEY = CreditCardController.class.getCanonicalName() +
-            ".exp_date_key";
-    private static final String EXP_DATE_TEXT_KEY = CreditCardController.class.getCanonicalName() +
-            ".exp_date_text_key";
-    private static final String SEC_CODE_TEXT_KEY = CreditCardController.class.getCanonicalName() +
-            ".sec_code_text_key";
-    private static final String NUMBER_COMPLETED_KEY = CreditCardController.class.getCanonicalName() +
-            ".number_completed_key";
-    private static final String NUMBER_TEXT_HAS_BEEN_ENTERED_KEY = CreditCardController.class.getCanonicalName() +
-            ".number_completed_key";
-    private static final String EXP_DATE_COMPLETED_KEY = CreditCardController.class.getCanonicalName() +
-            ".exp_date_completed_key";
-    private static final String SEC_CODE_COMPLETED_KEY = CreditCardController.class.getCanonicalName() +
-            ".sec_code_completed_key";
-    private static final String HAPPY_PATH_IS_BROKEN_KEY = CreditCardController.class.getCanonicalName() +
-            ".happy_path_is_broken_key";
-    private static final String CARD_ISSUER_KEY = CreditCardController.class.getCanonicalName() +
-            ".card_issuer_key";
-
     /**
      * Enumerated types representing the possible states of the CreditCardController's state machine.
      * These states are used as keys to look up CreditCardEvent-Transision HashMaps in the mTransitionMap HashMap. They
@@ -123,15 +100,12 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
      * These events are used to look up Transitions in the CreditCardEvent-Transision HashMaps that are
      * associated with each CreditCardState in mTransitionMap.
      */
-    private enum CreditCardEvent {
-        NUMBER_FIELD_ON_FOCUS_EVENT,
+    public enum CreditCardEvent {
+        CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT,
         CREDIT_CARD_NUMBER_VALIDATED_EVENT,
         EXP_DATE_FIELD_ON_FOCUS_EVENT,
-        OPEN_DATE_PICKER_EVENT,
         CLOSE_DATE_PICKER_EVENT,
-        EXP_DATE_VALIDATED_EVENT,
         SEC_CODE_FIELD_ON_FOCUS_EVENT,
-        SEC_CODE_VALIDATED_EVENT,
         TEXT_CHANGED_EVENT,
         FOCUS_LOST_EVENT
     }
@@ -156,7 +130,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
      */
     private Map<CreditCardState, Map<CreditCardEvent, Transition>> mTransitionMap;
 
-    private boolean mHappyPathIsBroken;
+    private boolean mHappyPathBroken;
     private CreditCardState mCurrentState;
     private boolean mNumberCompleted;
     private boolean mExpDateCompleted;
@@ -203,7 +177,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         mIgnoringEvents = false;
         mExpirationDate = new Date();
         mCurrentState = CreditCardState.IDLE_STATE;
-        mHappyPathIsBroken = false;
+        mHappyPathBroken = false;
         mCardIssuer = CreditCardUtilities.CardIssuer.INVALID;
         initTransitionTable();
 
@@ -218,7 +192,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
          *
          */
         if (mCreditCardNumEditField.hasFocus()) {
-            handleEvent(CreditCardEvent.NUMBER_FIELD_ON_FOCUS_EVENT);
+            handleEvent(CreditCardEvent.CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT);
         }
         else if (mExpDateEditField.hasFocus()) {
             handleEvent(CreditCardEvent.EXP_DATE_FIELD_ON_FOCUS_EVENT);
@@ -226,6 +200,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
+     *
      *
      * @param state
      */
@@ -238,7 +213,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
      *
      * @param event
      */
-    private void handleEvent(CreditCardEvent event) {
+    public void handleEvent(CreditCardEvent event) {
         Transition transition = mTransitionMap.get(mCurrentState).get(event);
         if (transition != null && !mIgnoringEvents) {
             CreditCardLogger.i(TAG, "Handling event: " + event.toString() + " for state: " + mCurrentState.toString());
@@ -294,7 +269,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
          * will be reset, but the stored date will not be reset to today's date.
          */
         if (mCreditCardNumEditField.getRawCreditCardNumber().isEmpty() && mNumberTextHasBeenEntered) {
-            mHappyPathIsBroken = false;
+            mHappyPathBroken = false;
             mNumberCompleted = false;
             mExpDateCompleted = false;
             mSecCodeCompleted = false;
@@ -497,7 +472,6 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
      */
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-
         CreditCardControllerState creditCardControllerState = new CreditCardControllerState();
 
         creditCardControllerState.currentState = mCurrentState.ordinal();
@@ -506,7 +480,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         creditCardControllerState.expDateText = mExpDateEditField.getText().toString();
         creditCardControllerState.secCodeText = mSecCodeEditField.getText().toString();
         creditCardControllerState.numberTextHasBeenEntered = mNumberTextHasBeenEntered;
-        creditCardControllerState.happyPathIsBroken = mHappyPathIsBroken;
+        creditCardControllerState.happyPathIsBroken = mHappyPathBroken;
         creditCardControllerState.cardIssuer = mCardIssuer.ordinal();
 
         byte[] creditCardControllerStateBytes = serializeObject(creditCardControllerState);
@@ -541,7 +515,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
 
         mCurrentState = CreditCardState.values()[creditCardControllerState.currentState];
         mNumberTextHasBeenEntered = creditCardControllerState.numberTextHasBeenEntered;
-        mHappyPathIsBroken = creditCardControllerState.happyPathIsBroken;
+        mHappyPathBroken = creditCardControllerState.happyPathIsBroken;
         mCardIssuer = CreditCardUtilities.CardIssuer
                 .values()[creditCardControllerState.cardIssuer];
         if (mCardIssuer == CreditCardUtilities.CardIssuer.INVALID) {
@@ -630,7 +604,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
         else if (view.getClass().equals(CreditCardNumberEditField.class) &&
                 motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            handleEvent(CreditCardEvent.NUMBER_FIELD_ON_FOCUS_EVENT);
+            handleEvent(CreditCardEvent.CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT);
         }
         return false;
     }
@@ -684,7 +658,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
      */
     @Override
     public void onDestroy() {
-        if (!mHappyPathIsBroken) {
+        if (!mHappyPathBroken) {
             /*
              * Requesting focus will send an on_focus event
              */
@@ -735,7 +709,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
             handleEvent(CreditCardEvent.FOCUS_LOST_EVENT);
         }
         else if (view.getClass().equals(CreditCardNumberEditField.class)) {
-            handleEvent(CreditCardEvent.NUMBER_FIELD_ON_FOCUS_EVENT);
+            handleEvent(CreditCardEvent.CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT);
         }
         else if (view.getClass().equals(CreditCardExpirationEditField.class)) {
             handleEvent(CreditCardEvent.EXP_DATE_FIELD_ON_FOCUS_EVENT);
@@ -743,6 +717,10 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         else if (view.getClass().equals(CreditCardSecurityCodeEditField.class)) {
             handleEvent(CreditCardEvent.SEC_CODE_FIELD_ON_FOCUS_EVENT);
         }
+    }
+
+    public CreditCardUtilities.CardIssuer getCardIssuer() {
+        return mCardIssuer;
     }
 
     /**
@@ -759,7 +737,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
          *
          */
         Map<CreditCardEvent, Transition> idleStateMap = new HashMap<CreditCardEvent, Transition>();
-        idleStateMap.put(CreditCardEvent.NUMBER_FIELD_ON_FOCUS_EVENT, new Transition() {
+        idleStateMap.put(CreditCardEvent.CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT, new Transition() {
             @Override
             public void execute() {
                 setCurrentState(CreditCardState.NUMBER_FIELD_FOCUSED_STATE);
@@ -769,7 +747,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         idleStateMap.put(CreditCardEvent.EXP_DATE_FIELD_ON_FOCUS_EVENT, new Transition() {
             @Override
             public void execute() {
-                mHappyPathIsBroken = true;
+                mHappyPathBroken = true;
                 setCurrentState(CreditCardState.DATE_PICKER_OPEN_STATE);
                 openDatePicker();
             }
@@ -777,7 +755,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         idleStateMap.put(CreditCardEvent.SEC_CODE_FIELD_ON_FOCUS_EVENT, new Transition() {
             @Override
             public void execute() {
-                mHappyPathIsBroken = true;
+                mHappyPathBroken = true;
                 updateTransformationMethod(mSecCodeEditField, null);
                 setCurrentState(CreditCardState.SEC_CODE_FIELD_FOCUSED_STATE);
                 evaluateSecurityCode();
@@ -819,7 +797,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         numberFocusedStateMap.put(CreditCardEvent.FOCUS_LOST_EVENT, new Transition() {
             @Override
             public void execute() {
-                mHappyPathIsBroken = true;
+                mHappyPathBroken = true;
                 setCurrentState(CreditCardState.IDLE_STATE);
                 evaluateCreditCardNumber();
             }
@@ -839,7 +817,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         numberEditStateMap.put(CreditCardEvent.CREDIT_CARD_NUMBER_VALIDATED_EVENT, new Transition() {
             @Override
             public void execute() {
-                if (!mHappyPathIsBroken) {
+                if (!mHappyPathBroken) {
                     setCurrentState(CreditCardState.DATE_PICKER_OPEN_STATE);
                     openDatePicker();
                 }
@@ -851,7 +829,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         numberEditStateMap.put(CreditCardEvent.FOCUS_LOST_EVENT, new Transition() {
             @Override
             public void execute() {
-                mHappyPathIsBroken = true;
+                mHappyPathBroken = true;
                 setCurrentState(CreditCardState.IDLE_STATE);
                 evaluateCreditCardNumber();
             }
@@ -872,7 +850,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
             @Override
             public void execute() {
                 if (!mDatePickerOpen) {
-                    mHappyPathIsBroken = true;
+                    mHappyPathBroken = true;
                     setCurrentState(CreditCardState.IDLE_STATE);
                 }
             }
@@ -901,7 +879,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         secCodeFocusedStateMap.put(CreditCardEvent.FOCUS_LOST_EVENT, new Transition() {
             @Override
             public void execute() {
-                mHappyPathIsBroken = true;
+                mHappyPathBroken = true;
                 updateTransformationMethod(mSecCodeEditField, PasswordTransformationMethod.getInstance());
                 setCurrentState(CreditCardState.IDLE_STATE);
                 evaluateSecurityCode();
@@ -922,12 +900,40 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         secCodeEditStateMap.put(CreditCardEvent.FOCUS_LOST_EVENT, new Transition() {
             @Override
             public void execute() {
-                mHappyPathIsBroken = true;
+                mHappyPathBroken = true;
                 updateTransformationMethod(mSecCodeEditField, PasswordTransformationMethod.getInstance());
                 setCurrentState(CreditCardState.IDLE_STATE);
                 evaluateSecurityCode();
             }
         });
         mTransitionMap.put(CreditCardState.SEC_CODE_FIELD_EDIT_STATE, secCodeEditStateMap);
+    }
+
+    /******************************
+     * Methods for unit testing
+     ******************************/
+
+    public CreditCardState getCurrentState() {
+        return mCurrentState;
+    }
+
+    public Date getExpirationDate() {
+        return mExpirationDate;
+    }
+
+    public boolean isHappyPathBroken() {
+        return mHappyPathBroken;
+    }
+
+    public void setHappyPathBroken(boolean broken) {
+        mHappyPathBroken = broken;
+    }
+
+    public void setDatePickerOpen(boolean open) {
+        mDatePickerOpen = open;
+    }
+
+    public boolean isDatePickerOpen() {
+        return mDatePickerOpen;
     }
 }

@@ -3,7 +3,7 @@ package com.hotwire.hotels.hwcclib;
 import java.util.Date;
 
 /**
- * Created by a-elpark on 8/22/14.
+ * Created by elpark on 8/22/14.
  */
 public class CreditCardModel {
 
@@ -27,6 +27,14 @@ public class CreditCardModel {
 
     /**
      *
+     * @param creditCardNumber
+     */
+    public void setCreditCardNumber(String creditCardNumber) {
+        mCreditCardNumber = creditCardNumber;
+    }
+
+    /**
+     *
      * @return
      */
     public Date getExpirationDate() {
@@ -35,9 +43,25 @@ public class CreditCardModel {
 
     /**
      *
+     * @param expirationDate
+     */
+    public void setExpirationDate(Date expirationDate) {
+        mExpirationDate = expirationDate;
+    }
+
+    /**
+     *
      * @return
      */
     public String getSecurityCode() {
         return mSecurityCode;
+    }
+
+    /**
+     *
+     * @param securityCode
+     */
+    public void setSecurityCode(String securityCode) {
+        mSecurityCode = securityCode;
     }
 }

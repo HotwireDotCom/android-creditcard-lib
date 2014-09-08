@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.hotwire.hotels.hwcclib.CreditCardController;
+import com.hotwire.hotels.hwcclib.CreditCardUtilities;
 import com.hotwire.hotels.hwcclib.R;
 import com.hotwire.hotels.hwcclib.fields.edit.CreditCardExpirationEditField;
 import com.hotwire.hotels.hwcclib.fields.edit.CreditCardNumberEditField;
@@ -201,5 +202,9 @@ public class CreditCardModule extends LinearLayout {
 
     CreditCardSecurityCodeEditField getCreditCardSecurityCodeEditField() {
         return mCreditCardSecurityCode;
+    }
+
+    CreditCardUtilities.CardIssuer getCardIssuer() {
+        return mCreditCardController.getCardIssuer();
     }
 }
