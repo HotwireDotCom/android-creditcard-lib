@@ -1,13 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'jacoco'
 apply plugin: 'robolectric'
+apply plugin: 'maven-publish'
 
 version '1.0'
 group 'com.hotwire.hwcclib'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '20.0.0'
+    buildToolsVersion '19.1.0'
 
     defaultConfig {
         applicationId "com.hotwire.hotels.hwcclib"
@@ -75,3 +76,18 @@ idea {
 
 apply plugin: 'android-library'
 apply plugin: 'android-maven'
+
+configurations {
+    deployerJars
+}
+
+dependencies {
+    deployerJars "org.apache.maven.wagon:wagon-http:2.2"
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        configuration = configurations.deployerJars
+        repository(url: "http://nexus01.hotwire.com:8081/nexus/service/local/repositories/releases/content/")
+    }
+}
