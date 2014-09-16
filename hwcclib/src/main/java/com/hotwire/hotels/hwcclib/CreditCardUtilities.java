@@ -11,6 +11,8 @@ package com.hotwire.hotels.hwcclib;
  * Created by ankpal on 8/12/14.
  */
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -277,5 +279,21 @@ public final class CreditCardUtilities {
         }
 
         return original.replaceAll(REGEX_WHITESPACE, EMPTY_STRING);
+    }
+
+    /**
+     *
+     *
+     * @param dateFormat
+     * @param date
+     * @return
+     */
+    public static String getFormattedDate(String dateFormat, Date date) {
+        String dateString = "";
+        if (dateFormat != null && date != null) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+            dateString = simpleDateFormat.format(date);
+        }
+        return dateString;
     }
 }

@@ -12,8 +12,10 @@ import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
+import com.hotwire.hotels.hwcclib.CreditCardUtilities;
 import com.hotwire.hotels.hwcclib.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -75,8 +77,9 @@ public class CreditCardExpirationEditField extends EditText {
      */
     public void setExpirationDate(Date expirationDate) {
         if (expirationDate != null) {
-            String dateString = DateFormat.format(getResources().getString(R.string.expiration_field_date_format),
-                                                  expirationDate).toString();
+            String dateFormat = getResources().getString(R.string.expiration_field_date_format);
+            String dateString = CreditCardUtilities.getFormattedDate(dateFormat, expirationDate);
+
             setText(dateString);
         }
     }

@@ -10,11 +10,16 @@ public class CreditCardModel {
     private String mCreditCardNumber;
     private Date mExpirationDate;
     private String mSecurityCode;
+    private CreditCardUtilities.CardIssuer mCardIssuer;
 
-    public CreditCardModel(String creditCardNumber, Date expirationDate, String securityCode) {
+    public CreditCardModel(String creditCardNumber,
+                           Date expirationDate,
+                           String securityCode,
+                           CreditCardUtilities.CardIssuer cardIssuer) {
         mCreditCardNumber = creditCardNumber;
         mExpirationDate = expirationDate;
         mSecurityCode = securityCode;
+        mCardIssuer = cardIssuer;
     }
 
     /**
@@ -63,5 +68,21 @@ public class CreditCardModel {
      */
     public void setSecurityCode(String securityCode) {
         mSecurityCode = securityCode;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public CreditCardUtilities.CardIssuer getCardIssuer() {
+        return mCardIssuer;
+    }
+
+    /**
+     *
+     * @param cardIssuer
+     */
+    public void setCardIssuer(CreditCardUtilities.CardIssuer cardIssuer) {
+        mCardIssuer = cardIssuer;
     }
 }

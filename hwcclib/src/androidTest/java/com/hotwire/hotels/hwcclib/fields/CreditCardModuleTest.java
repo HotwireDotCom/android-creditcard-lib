@@ -2,6 +2,7 @@ package com.hotwire.hotels.hwcclib.fields;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.method.PasswordTransformationMethod;
@@ -30,6 +31,7 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowDialog;
 import org.robolectric.util.ActivityController;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -443,19 +445,22 @@ public class CreditCardModuleTest {
 
         CreditCardModule creditCardModule = new CreditCardModule(testActivity);
         CreditCardNumberEditField creditCardNumberEditField = creditCardModule.getCreditCardNumberEditField();
-        CreditCardExpirationEditField creditCardExpirationEditField = creditCardModule.getCreditCardExpirationEditField();
-        CreditCardSecurityCodeEditField creditCardSecurityCodeEditField = creditCardModule.getCreditCardSecurityCodeEditField();
+        CreditCardExpirationEditField creditCardExpirationEditField =
+                creditCardModule.getCreditCardExpirationEditField();
+        CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
+                creditCardModule.getCreditCardSecurityCodeEditField();
         CreditCardController creditCardController = creditCardModule.getCreditCardController();
 
-        final CreditCardModel testCreditCardModel = new CreditCardModel(null, null, null);
-        CreditCardController.CreditCardModelCompleteListener creditCardCompleteListener = new CreditCardController.CreditCardModelCompleteListener() {
-            @Override
-            public void onCreditCardModelComplete(CreditCardModel creditCardModel) {
-                testCreditCardModel.setCreditCardNumber(creditCardModel.getCreditCardNumber());
-                testCreditCardModel.setExpirationDate(creditCardModel.getExpirationDate());
-                testCreditCardModel.setSecurityCode(creditCardModel.getSecurityCode());
-            }
-        };
+        final CreditCardModel testCreditCardModel = new CreditCardModel(null, null, null, null);
+        CreditCardController.CreditCardModelCompleteListener creditCardCompleteListener =
+                new CreditCardController.CreditCardModelCompleteListener() {
+                    @Override
+                    public void onCreditCardModelComplete(CreditCardModel creditCardModel) {
+                        testCreditCardModel.setCreditCardNumber(creditCardModel.getCreditCardNumber());
+                        testCreditCardModel.setExpirationDate(creditCardModel.getExpirationDate());
+                        testCreditCardModel.setSecurityCode(creditCardModel.getSecurityCode());
+                    }
+                };
         creditCardModule.setCreditCardModelCompleteListener(creditCardCompleteListener);
 
         String testCreditCardNumber = "4111111111111111";
@@ -510,9 +515,12 @@ public class CreditCardModuleTest {
         CreditCardModule creditCardModule = testActivity.getCreditCardModule();
 
         // Obtain each of the views, and the controller
-        CreditCardNumberEditField creditCardNumberEditField = creditCardModule.getCreditCardNumberEditField();
-        CreditCardExpirationEditField creditCardExpirationEditField = creditCardModule.getCreditCardExpirationEditField();
-        CreditCardSecurityCodeEditField creditCardSecurityCodeEditField = creditCardModule.getCreditCardSecurityCodeEditField();
+        CreditCardNumberEditField creditCardNumberEditField =
+                creditCardModule.getCreditCardNumberEditField();
+        CreditCardExpirationEditField creditCardExpirationEditField =
+                creditCardModule.getCreditCardExpirationEditField();
+        CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
+                creditCardModule.getCreditCardSecurityCodeEditField();
         CreditCardController creditCardController = creditCardModule.getCreditCardController();
 
         // Run through the happy path
@@ -540,8 +548,8 @@ public class CreditCardModuleTest {
 
         String dateFieldString = creditCardExpirationEditField.getText().toString();
         Date expDate = creditCardController.getExpirationDate();
-        String expDateString = android.text.format.DateFormat.format(testActivity.getResources()
-                .getString(R.string.expiration_field_date_format), expDate).toString();
+        String dateFormat = testActivity.getResources().getString(R.string.expiration_field_date_format);
+        String expDateString = CreditCardUtilities.getFormattedDate(dateFormat, expDate);
         assertThat(dateFieldString).isEqualTo(expDateString);
 
         assertThat(creditCardSecurityCodeEditField.hasFocus());
@@ -606,20 +614,17 @@ public class CreditCardModuleTest {
         }
     }
 
-
-
-    private void print(String str) {
-        System.out.println("\n\n"+str+"\n\n");
-    }
-
     @Test
-    public void loadSavedCreditCardInfo() {
+    public void loadSavedCreditCardInfoTest() {
         Activity testActivity = Robolectric.buildActivity(Activity.class).create().start().visible().get();
 
         CreditCardModule creditCardModule = new CreditCardModule(testActivity);
-        CreditCardNumberEditField creditCardNumberEditField = creditCardModule.getCreditCardNumberEditField();
-        CreditCardExpirationEditField creditCardExpirationEditField = creditCardModule.getCreditCardExpirationEditField();
-        CreditCardSecurityCodeEditField creditCardSecurityCodeEditField = creditCardModule.getCreditCardSecurityCodeEditField();
+        CreditCardNumberEditField creditCardNumberEditField =
+                creditCardModule.getCreditCardNumberEditField();
+        CreditCardExpirationEditField creditCardExpirationEditField =
+                creditCardModule.getCreditCardExpirationEditField();
+        CreditCardSecurityCodeEditField creditCardSecurityCodeEditField =
+                creditCardModule.getCreditCardSecurityCodeEditField();
         CreditCardController creditCardController = creditCardModule.getCreditCardController();
 
         String testCreditCardNumber = "4111111111111111";
@@ -627,9 +632,21 @@ public class CreditCardModuleTest {
         String testSecurityCode = "111";
 
 
-        CreditCardModel testCreditCardModel = new CreditCardModel(testCreditCardNumber, testDate, testSecurityCode);
-    }
+        CreditCardModel testCreditCardModel = new CreditCardModel(testCreditCardNumber,
+                                                                  testDate,
+                                                                  testSecurityCode,
+                                                                  CreditCardUtilities.CardIssuer.VISA);
 
+        creditCardController.loadCreditCardInfoFromModel(testCreditCardModel);
+
+        assertThat(creditCardNumberEditField.getRawCreditCardNumber()).isEqualTo(testCreditCardNumber);
+
+        String dateFormat = testActivity.getResources().getString(R.string.expiration_field_date_format);
+        String formattedDate = CreditCardUtilities.getFormattedDate(dateFormat, testDate);
+        assertThat(creditCardExpirationEditField.getText().toString()).isEqualTo(formattedDate);
+        assertThat(creditCardSecurityCodeEditField.getText().toString()).isEqualTo(testSecurityCode);
+        assertThat(creditCardController.isComplete()).isTrue();
+    }
 
     @Test
     public void stateMachineIdleStateTest() {

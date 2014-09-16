@@ -238,9 +238,11 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
      */
     public void complete() {
         if (mNumberCompleted && mExpDateCompleted && mSecCodeCompleted && mCreditCardModelCompleteListener != null) {
-            mCreditCardModelCompleteListener.onCreditCardModelComplete(new CreditCardModel(
-                    mCreditCardNumEditField.getRawCreditCardNumber(),
-                    mExpirationDate, mSecCodeEditField.getText().toString()));
+            CreditCardModel creditCardModel = new CreditCardModel(mCreditCardNumEditField.getRawCreditCardNumber(),
+                                                                  mExpirationDate,
+                                                                  mSecCodeEditField.getText().toString(),
+                                                                  mCardIssuer);
+            mCreditCardModelCompleteListener.onCreditCardModelComplete(creditCardModel);
         }
     }
 
@@ -435,8 +437,8 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         boolean wasIgnoringEvents = mIgnoringEvents;
         mIgnoringEvents = true;
 
-        String dateString = DateFormat.format(mContext.getResources().getString(R.string.expiration_field_date_format),
-                creditCardModel.getExpirationDate()).toString();
+        String dateFormat = mContext.getResources().getString(R.string.expiration_field_date_format);
+        String dateString = CreditCardUtilities.getFormattedDate(dateFormat, creditCardModel.getExpirationDate());
         loadCreditCardInfo(creditCardModel.getCreditCardNumber(), creditCardModel.getExpirationDate(),
                 dateString, creditCardModel.getSecurityCode());
 
@@ -498,6 +500,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
      * @param savedInstanceState
      */
     public void onRestoreSavedInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            return;
+        }
         /*
          * Tell the state machine to ignore events while the saved state
          * is being restored.

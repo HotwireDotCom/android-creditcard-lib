@@ -10,6 +10,12 @@ package com.hotwire.hotels.hwcclib;
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.robolectric.Robolectric;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
  * Created by ankpal on 8/13/14.
@@ -84,5 +90,25 @@ public class CreditCardUtilitiesTest extends TestCase {
 
         cleanString = CreditCardUtilities.getCleanString("");
         assertTrue(cleanString.isEmpty());
+    }
+
+    @Test
+    public void getFormattedStringTest() {
+        Calendar calendar = Calendar.getInstance();
+        // set the date to 7-15-2026 (US Date) -- formatting should output 07/26
+        calendar.set(2026, Calendar.JULY, 15);
+
+        // using raw string for date, in the event the resource is changed to a different format
+        String formattedDate = CreditCardUtilities.getFormattedDate("MM/yy", calendar.getTime());
+        assertThat(formattedDate).isEqualTo("07/26");
+
+        formattedDate = CreditCardUtilities.getFormattedDate(null, calendar.getTime());
+        assertThat(formattedDate).isEqualTo("");
+
+        formattedDate = CreditCardUtilities.getFormattedDate("MM/yy", null);
+        assertThat(formattedDate).isEqualTo("");
+
+        formattedDate = CreditCardUtilities.getFormattedDate(null, null);
+        assertThat(formattedDate).isEqualTo("");
     }
 }

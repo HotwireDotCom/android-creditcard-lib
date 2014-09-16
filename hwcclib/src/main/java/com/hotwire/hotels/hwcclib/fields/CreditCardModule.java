@@ -188,23 +188,19 @@ public class CreditCardModule extends LinearLayout {
         mCreditCardController.onRestoreSavedInstanceState(savedInstanceState);
     }
 
-    /******************************
-     * Unit Test Helper Methods
-     ******************************/
-
-    CreditCardNumberEditField getCreditCardNumberEditField() {
+    public CreditCardNumberEditField getCreditCardNumberEditField() {
         return mCreditCardNumber;
     }
 
-    CreditCardExpirationEditField getCreditCardExpirationEditField() {
+    public CreditCardExpirationEditField getCreditCardExpirationEditField() {
         return mCreditCardExpiration;
     }
 
-    CreditCardSecurityCodeEditField getCreditCardSecurityCodeEditField() {
+    public CreditCardSecurityCodeEditField getCreditCardSecurityCodeEditField() {
         return mCreditCardSecurityCode;
     }
 
-    CreditCardUtilities.CardIssuer getCardIssuer() {
+    public CreditCardUtilities.CardIssuer getCardIssuer() {
         return mCreditCardController.getCardIssuer();
     }
 }
