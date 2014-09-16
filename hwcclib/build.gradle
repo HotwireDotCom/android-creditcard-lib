@@ -7,8 +7,8 @@ version '1.0'
 group 'com.hotwire.hwcclib'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.1.0'
+    compileSdkVersion Integer.valueOf(sdkVersion)
+    buildToolsVersion toolsVersion
 
     defaultConfig {
         applicationId "com.hotwire.hotels.hwcclib"
