@@ -1,13 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'jacoco'
 apply plugin: 'robolectric'
+apply plugin: 'maven-publish'
 
-version '1.0'
+version '1.0.1-SNAPSHOT'
 group 'com.hotwire.hwcclib'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '20.0.0'
+    compileSdkVersion Integer.valueOf(sdkVersion)
+    buildToolsVersion toolsVersion
 
     defaultConfig {
         applicationId "com.hotwire.hotels.hwcclib"
@@ -57,12 +58,15 @@ dependencies {
         exclude module: 'maven-settings'
         exclude module: 'plexus-container-default'
         exclude module: 'plexus-interpolation'
+        exclude module: 'support-v4'
         exclude module: 'plexus-utils'
         exclude module: 'wagon-file'
         exclude module: 'wagon-http-lightweight'
         exclude module: 'wagon-provider-api'
     }
-    androidTestCompile 'com.squareup:fest-android:1.0.+'
+    androidTestCompile('com.squareup:fest-android:1.0.+') {
+        exclude module: 'support-v4'
+    }
 }
 
 apply plugin: 'idea'
@@ -75,3 +79,23 @@ idea {
 
 apply plugin: 'android-library'
 apply plugin: 'android-maven'
+
+configurations {
+    deployerJars
+}
+
+dependencies {
+    deployerJars "org.apache.maven.wagon:wagon-http:2.2"
+}
+
+
+
+uploadArchives {
+    repositories.mavenDeployer {
+        configuration = configurations.deployerJars
+        repository(url: "http://nexus01.hotwire.com:8081/nexus/service/local/repositories/${project.version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases' }/content/"){
+            authentication(userName: System.getenv("NEXUS_USER"), password: System.getenv("NEXUS_PASSWORD"))
+        }
+    }
+}
+
