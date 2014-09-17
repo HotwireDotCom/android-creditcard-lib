@@ -3,7 +3,7 @@ apply plugin: 'jacoco'
 apply plugin: 'robolectric'
 apply plugin: 'maven-publish'
 
-version '1.0'
+version '1.0.1-SNAPSHOT'
 group 'com.hotwire.hwcclib'
 
 android {
@@ -92,7 +92,7 @@ dependencies {
 uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployerJars
-        repository(url: "http://nexus01.hotwire.com:8081/nexus/service/local/repositories/releases/content/"){
+        repository(url: "http://nexus01.hotwire.com:8081/nexus/service/local/repositories/${project.version.endsWith('-SNAPSHOT') ? 'snapshot' : 'release' }/content/"){
             authentication(userName: System.getenv("NEXUS_USER"), password: System.getenv("NEXUS_PASSWORD"))
         }
     }
