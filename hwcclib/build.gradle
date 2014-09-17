@@ -91,10 +91,8 @@ dependencies {
 
 uploadArchives {
     repositories.mavenDeployer {
-        configuration = configurations.archives
-
-        repository(url: "http://nexus01.hotwire.com:8081/nexus/content/repositories/releases/") {
-            authentication(userName: nexusUsername, password: nexusPassword)
-        }
+        configuration = configurations.deployerJars
+        repository(url: "http://nexus01.hotwire.com:8081/nexus/service/local/repositories/releases/content/")
     }
 }
+
