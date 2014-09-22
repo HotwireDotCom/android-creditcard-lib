@@ -10,6 +10,7 @@ import android.content.Context;
 import android.text.InputType;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.widget.EditText;
 
 import com.hotwire.hotels.hwcclib.CreditCardUtilities;
@@ -62,6 +63,7 @@ public class CreditCardExpirationEditField extends EditText {
     private void init() {
         setHint(R.string.expiration_field_hint_text);
         setHintTextColor(mContext.getResources().getColor(R.color.field_text_color_hint_default));
+        setGravity(Gravity.BOTTOM);
         setSingleLine(true);
         setInputType(InputType.TYPE_CLASS_NUMBER);
         setKeyListener(null);
@@ -105,8 +107,24 @@ public class CreditCardExpirationEditField extends EditText {
      */
     public void setErrorState(int errorMessageResId) {
         if (mContext != null && errorMessageResId != NO_RES_ID) {
-            setError(mContext.getString(errorMessageResId));
+            setErrorState(mContext.getString(errorMessageResId));
         }
-        setTextColor(mContext.getResources().getColor(R.color.field_text_color_error));
+        else {
+            setErrorState(null);
+        }
+    }
+
+    /**
+     *
+     * @param errorMessage
+     */
+    public void setErrorState(String errorMessage) {
+        if (errorMessage != null && !errorMessage.isEmpty()) {
+            setError(errorMessage);
+        }
+
+        if (mContext != null) {
+            setTextColor(mContext.getResources().getColor(R.color.field_text_color_error));
+        }
     }
 }

@@ -131,10 +131,26 @@ public class CreditCardNumberEditField extends EditText {
      * @param errorMessageResId
      */
     public void setErrorState(int errorMessageResId) {
-        if (errorMessageResId != NO_RES_ID) {
-            setError(mContext.getString(errorMessageResId));
+        if (mContext != null && errorMessageResId != NO_RES_ID) {
+            setErrorState(mContext.getString(errorMessageResId));
         }
-        setTextColor(mContext.getResources().getColor(R.color.field_text_color_error));
+        else {
+            setErrorState(null);
+        }
+    }
+
+    /**
+     *
+     * @param errorMessage
+     */
+    public void setErrorState(String errorMessage) {
+        if (errorMessage != null && !errorMessage.isEmpty()) {
+            setError(errorMessage);
+        }
+
+        if (mContext != null) {
+            setTextColor(mContext.getResources().getColor(R.color.field_text_color_error));
+        }
     }
 
     /**

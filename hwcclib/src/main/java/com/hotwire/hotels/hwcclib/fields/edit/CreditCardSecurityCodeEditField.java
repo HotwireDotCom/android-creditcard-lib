@@ -122,9 +122,25 @@ public class CreditCardSecurityCodeEditField extends EditText {
      */
     public void setErrorState(int errorMessageResId) {
         if (mContext != null && errorMessageResId != NO_RES_ID) {
-            setError(mContext.getString(errorMessageResId));
+            setErrorState(mContext.getString(errorMessageResId));
         }
-        setTextColor(mContext.getResources().getColor(R.color.field_text_color_error));
+        else {
+            setErrorState(null);
+        }
+    }
+
+    /**
+     *
+     * @param errorMessage
+     */
+    public void setErrorState(String errorMessage) {
+        if (errorMessage != null && !errorMessage.isEmpty()) {
+            setError(errorMessage);
+        }
+
+        if (mContext != null) {
+            setTextColor(mContext.getResources().getColor(R.color.field_text_color_error));
+        }
     }
 
     /**
