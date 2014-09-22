@@ -5,14 +5,14 @@
 
     <groupId>com.hotwire.hwcclib</groupId>
     <artifactId>app</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>apk</packaging>
     <name>app</name>
 
     <parent>
         <groupId>com.hotwire.hwcclib</groupId>
         <artifactId>module.root</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>com.hotwire.hwcclib</groupId>
             <artifactId>hwcclib</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
             <type>apklib</type>
         </dependency>
     </dependencies>
