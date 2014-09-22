@@ -261,6 +261,30 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
 
     /**
      *
+     * @return
+     */
+    public boolean isCreditCardNumberComplete() {
+        return mNumberCompleted;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isExpirationDateComplete() {
+        return mExpDateCompleted;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isSecurityCodeComplete() {
+        return mSecCodeCompleted;
+    }
+
+    /**
+     *
      */
     private void evaluateCreditCardNumber() {
         updateCreditCardType();
