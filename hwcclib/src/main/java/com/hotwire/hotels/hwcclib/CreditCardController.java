@@ -447,8 +447,10 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
             int start, stop;
             start = editText.getSelectionStart();
             stop = editText.getSelectionEnd();
+            mIgnoringEvents = true;
             editText.setTransformationMethod(transformationMethod);
             editText.setSelection(start, stop);
+            mIgnoringEvents = false;
         }
     }
 
