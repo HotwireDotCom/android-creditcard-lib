@@ -34,6 +34,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     private static final String DATE_KEY = ExpirationPickerDialogFragment.class.getCanonicalName() + ".date_key";
     private static final String MONTH_PICKER_KEY = ExpirationPickerDialogFragment.class.getCanonicalName() + ".month_picker_key";
     private static final String YEAR_PICKER_KEY = ExpirationPickerDialogFragment.class.getCanonicalName() + ".year_picker_key";
+    private static final int FIRST_OF_THE_MONTH = 1;
 
     private ExpirationPickerListener mExpirationPickerListener;
     private NumberPicker mNumberPickerMonth;
@@ -220,6 +221,8 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
      */
     private Date buildDate() {
         Calendar cal = Calendar.getInstance();
+        // override the date to be the first of the month, this is not checked when evaluating expiration
+        cal.set(Calendar.DATE, FIRST_OF_THE_MONTH);
         cal.set(Calendar.MONTH, mMonthPickerValue);
         int year = Integer.valueOf(mDisplayYears[mYearPickerValue]);
         cal.set(Calendar.YEAR, year);
@@ -236,6 +239,8 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     private int getValueFromDate(long dateMs, int calendarValue) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(dateMs);
+        // override the date to be the first of the month, this is not checked when evaluating expiration
+        cal.set(Calendar.DATE, FIRST_OF_THE_MONTH);
         switch(calendarValue) {
             case Calendar.MONTH:
                 // this should reflect the same values that are used for the picker
