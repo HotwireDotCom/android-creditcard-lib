@@ -3,7 +3,9 @@ package com.hotwire.hotels.hwcclib;
 import java.util.Date;
 
 /**
- * Created by elpark on 8/22/14.
+ * A data object that will store all of the information that has been entered into the credit card, expiration, and
+ * security code fields. The CreditCardController will build and return this object if the developer chooses to use it.
+ * All of the data stored in this object can be retrieved from the views themselves.
  */
 public class CreditCardModel {
 
@@ -12,6 +14,14 @@ public class CreditCardModel {
     private String mSecurityCode;
     private CreditCardUtilities.CardIssuer mCardIssuer;
 
+    /**
+     * Constructor to store all of the credit card information.
+     *
+     * @param creditCardNumber un-formatted credit card number to store.
+     * @param expirationDate expiration date of the credit card
+     * @param securityCode security code of the credit card
+     * @param cardIssuer card issuer of the credit card
+     */
     public CreditCardModel(String creditCardNumber,
                            Date expirationDate,
                            String securityCode,
@@ -23,64 +33,57 @@ public class CreditCardModel {
     }
 
     /**
-     *
-     * @return
+     * @return an un-formatted credit card number.
      */
     public String getCreditCardNumber() {
         return mCreditCardNumber;
     }
 
     /**
-     *
-     * @param creditCardNumber
+     * @param creditCardNumber un-formatted credit card number to store.
      */
     public void setCreditCardNumber(String creditCardNumber) {
         mCreditCardNumber = creditCardNumber;
     }
 
     /**
-     *
-     * @return
+     * @return the expiration date for the credit card.
      */
     public Date getExpirationDate() {
         return mExpirationDate;
     }
 
     /**
-     *
-     * @param expirationDate
+     * @param expirationDate Date object to use as expiration date for credit card. Ensure day field is a day that
+     *                       exists in all months (eg. 1st of the month).
      */
     public void setExpirationDate(Date expirationDate) {
         mExpirationDate = expirationDate;
     }
 
     /**
-     *
-     * @return
+     * @return the security code for the credit card.
      */
     public String getSecurityCode() {
         return mSecurityCode;
     }
 
     /**
-     *
-     * @param securityCode
+     * @param securityCode security code to use with the stored card.
      */
     public void setSecurityCode(String securityCode) {
         mSecurityCode = securityCode;
     }
 
     /**
-     *
-     * @return
+     * @return the CardIssuer of the credit card.
      */
     public CreditCardUtilities.CardIssuer getCardIssuer() {
         return mCardIssuer;
     }
 
     /**
-     *
-     * @param cardIssuer
+     * @param cardIssuer the CardIssuer of the credit card.
      */
     public void setCardIssuer(CreditCardUtilities.CardIssuer cardIssuer) {
         mCardIssuer = cardIssuer;

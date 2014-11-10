@@ -1,15 +1,4 @@
-/*
- * Copyright 2014 Hotwire. All Rights Reserved.
- *
- * This software is the proprietary information of Hotwire.
- * Use is subject to license terms.
- */
-
 package com.hotwire.hotels.hwcclib;
-
-/**
- * Created by ankpal on 8/12/14.
- */
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author ankpal
  * This class provides utility methods to
  * check for valid supported credit cards using Luhn mod 10.
  * determine the card issuer with the first 4 characters entered. and
@@ -25,27 +13,39 @@ import java.util.regex.Pattern;
  *
  */
 public final class CreditCardUtilities {
+    public static final String TAG = CreditCardUtilities.class.getSimpleName();
+
+    public static final int NO_RES_ID = -1;
+
+    // VISA, MASTER CARD, DISCOVER values
+    public static final int CARD_FORMATTED_LENGTH_19 = 19; // credit card formatted length
+    public static final int OFFSET_1 = 1;                  // offset (see CreditCardInputFilter)
+    public static final int MODULO_5 = 5;                  // modulo (see CreditCardInputFilter)
+    public static final int SECURITY_LENGTH_3 = 3;         // security code length (see SecurityCodeInputFilter)
+
+    // AMERICAN EXPRESS values
+    public static final int CARD_FORMATTED_LENGTH_17 = 17; // credit card formatted length
+    public static final int OFFSET_3 = 3;                  // offset (see CreditCardInputFilter)
+    public static final int MODULO_7 = 7;                  // modulo (see CreditCardInputFilter)
+    public static final int SECURITY_LENGTH_4 = 4;         // security code length (see SecurityCodeInputFilter)
 
 
-    public static final int CARD_FORMATTED_LENGTH_19 = 19;
-    public static final int CARD_FORMATTED_LENGTH_17 = 17;
-    public static final int SECURITY_LENGTH_3 = 3;
-    public static final int SECURITY_LENGTH_4 = 4;
-    public static final int OFFSET_1 = 1;
-    public static final int OFFSET_3 = 3;
-    public static final int MODULO_5 = 5;
-    public static final int MODULO_7 = 7;
+
     public static final int MIN_LENGTH_FOR_TYPE = 4;
 
+    // Regex for VISA
     public static final String VISA_CARD_REGEX = "^4[0-9]{15}?";
     public static final String VISA_CARD_TYPE_REGEX = "^4[0-9]{3}?";
 
+    // Regex for MASTER CARD
     public static final String MASTERCARD_CARD_REGEX = "^5[1-5][0-9]{14}$";
     public static final String MASTERCARD_CARD_TYPE_REGEX = "^5[1-5][0-9]{2}$";
 
+    // Regex for AMERICAN EXPRESS
     public static final String AMERICANEXPRESS_CARD_REGEX = "^3[47][0-9]{13}$";
     public static final String AMERICANEXPRESS_CARD_TYPE_REGEX = "^3[47][0-9]{2}$";
 
+    // Regex for DISCOVER
     public static final String DISCOVER_CARD_REGEX = "^6(?:011|5[0-9]{2})[0-9]{12}$";
     public static final String DISCOVER_CARD_TYPE_REGEX = "^6(?:011|5[0-9]{2})$";
 
@@ -53,16 +53,17 @@ public final class CreditCardUtilities {
     public static final String REGEX_WHITESPACE = "\\s";
 
     private CreditCardUtilities() {
-
+        // Intentionally left empty, static utility class
     }
     /**
      * An enum containing all the supported cards and their corresponding rules.
      * The rules are laid out in the following order
-     * mRegex for validating the card
-     * Partial mRegex for determining the card issuer based on the first 4 characters entered
-     * The security code length
-     * The offset used during credit card number formatting. See the CreditCardNumberEditField for more details
-     * The modulo value used to determine where to put spaces in a credit card number
+     *
+     * Regex for validating the card
+     * Partial Regex for determining the card issuer based on the first 4 characters entered
+     * Security code length
+     * Offset used during credit card number formatting (see the CreditCardInputFilter).
+     * Modulo value used to determine where to put spaces in a credit card number (see CreditCardInputFilter).
      * The id of the drawable for the credit card type
      * The id of the drawable used to show where a security code is located on a card
      */
@@ -137,64 +138,56 @@ public final class CreditCardUtilities {
         }
 
         /**
-         *
-         * @return
+         * @return regex for validating a credit card
          */
         public String getRegex() {
             return mRegex;
         }
 
         /**
-         *
-         * @return
+         * @return regex for determining a credit card type
          */
         public String getRegexType() {
             return mRegexType;
         }
 
         /**
-         *
-         * @return
+         * @return the length of a card type including formatting
          */
         public int getFormattedLength() {
             return mFormattedLength;
         }
 
         /**
-         *
-         * @return
+         * @return the security code length required by a card type
          */
         public int getSecurityLength() {
             return mSecurityLength;
         }
 
         /**
-         *
-         * @return
+         * @return the offset to use when formatting the credit card number
          */
         public int getOffset() {
             return mOffset;
         }
 
         /**
-         *
-         * @return
+         * @return the modulo to use when formatting the credit card number
          */
         public int getModulo() {
             return mModulo;
         }
 
         /**
-         *
-         * @return
+         * @return the resource id for the credit card image
          */
         public int getIconResourceId() {
             return mIconResourceId;
         }
 
         /**
-         *
-         * @return
+         * @return the resource id for the security code image
          */
         public int getSecurityIconResourceId() {
             return mSecCodeResourceId;
@@ -203,9 +196,10 @@ public final class CreditCardUtilities {
 
 
     /**
+     * Determine the CardIssuer based on an un-formatted credit card number string.
      *
-     * @param inputNumber - a sanitized string representation of the credit card number
-     * @return - the enum value that represents CardIssuer
+     * @param inputNumber - a sanitized string representing the credit card number.
+     * @return - the enum value that represents CardIssuer.
      */
     public static CardIssuer getCardIssuer(String inputNumber) {
         if (inputNumber.length() < MIN_LENGTH_FOR_TYPE) {
@@ -225,9 +219,10 @@ public final class CreditCardUtilities {
     }
 
     /**
+     * Determine if a valid credit card number based on an un-formatted credit card number string.
      *
-     * @param inputNumber - a sanitized string representation of the credit card number
-     * @return true if the credit card is supported and passes the Luhn algorithm
+     * @param inputNumber - a sanitized string representation of the credit card number.
+     * @return true if the credit card is supported, valid, and passes the Luhn algorithm.
      */
     public static boolean isValidCreditCard(String inputNumber) {
         CardIssuer cardIssuer = getCardIssuer(inputNumber);
@@ -240,10 +235,10 @@ public final class CreditCardUtilities {
         Matcher matcher = pattern.matcher(inputNumber);
 
         return matcher.matches() && isValidUsingLuhn(inputNumber);
-
     }
 
     /**
+     * Determine if an un-formatted credit card number can pass the luhn algorithm.
      *
      * @param inputNumber - a sanitized string representation of the credit card number
      * @return true if inputNumber passes the Luhn algorithm
@@ -268,10 +263,10 @@ public final class CreditCardUtilities {
     }
 
     /**
-     * Strips a string of all white space and replaces with an empty string
+     * Strips a string of all white space and replaces with an empty string.
      *
-     * @param original
-     * @return
+     * @param original string that can have any number of spaces.
+     * @return a clean string stripped of white space.
      */
     public static String getCleanString(String original) {
         if (original == null || original.isEmpty()) {
@@ -282,17 +277,26 @@ public final class CreditCardUtilities {
     }
 
     /**
+     * Formats a provided Date to the provided date format.
      *
-     *
-     * @param dateFormat
-     * @param date
-     * @return
+     * @param dateFormat format to return the date in.
+     * @param date date to be for matted.
+     * @return a formatted date, or an empty string.
      */
     public static String getFormattedDate(String dateFormat, Date date) {
         String dateString = "";
-        if (dateFormat != null && date != null) {
+        try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
             dateString = simpleDateFormat.format(date);
+        }
+        catch (NullPointerException npe) {
+            // either the dateformat, or the date are null, log and swallow the exception and proceed with an
+            // empty string.
+            CreditCardLogger.e(TAG, "Null date, or null date format", npe);
+        }
+        catch (IllegalArgumentException e) {
+            // either the date could not be formatted, log and swallow the exception and proceed with an empty string.
+            CreditCardLogger.e(TAG, "Invalid date, or invalid date format", e);
         }
         return dateString;
     }

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.TransformationMethod;
 import android.view.MotionEvent;
@@ -38,34 +37,44 @@ import java.util.Map;
  * a user's credit card information. The CreditCardController has four main functions:
  *
  *  1: It implements a state machine for organizing the execution of logic based on user interaction with the
- *  the CreditCardNumberEditField, CreditCardExpirationEditField, CreditCardSecurityCodeEditField, and the
- *  ExpirationPickerDialogFragment. The state machine encourages, but does not enforce, an ideal way to move
- *  from field to field, known as the Happy Path. The different states in the state machine represent the
- *  state of the user's interaction with the credit card information entry mechanisms. This is different than
- *  a state machine representing all of the possible states of the CreditCardController or the state of the
- *  information that the user has entered. For example, the state machine can reflect that the user is editing
- *  the CreditCardNumberEditField, but it cannot reflect that the user has entered an invalid credit card number.
+ *     the CreditCardNumberEditField, CreditCardExpirationEditField, CreditCardSecurityCodeEditField, and the
+ *     ExpirationPickerDialogFragment. The state machine encourages, but does not enforce, an ideal way to move
+ *     from field to field, known as the Happy Path. The different states in the state machine represent the
+ *     state of the user's interaction with the credit card information entry mechanisms. This is different than
+ *     a state machine representing all of the possible states of the CreditCardController or the state of the
+ *     information that the user has entered. For example, the state machine can reflect that the user is editing
+ *     the CreditCardNumberEditField, but it cannot reflect that the user has entered an invalid credit card number.
  *
  *  2: It contains evaluators that determine whether or not the information a user has entered into a specific
- *  field is valid. These evaluators modify the entry fields' error states when they contain invalid information and
- *  determine when users have completed entering all of their credit card information.
+ *     field is valid. These evaluators modify the entry fields' error states when they contain invalid information and
+ *     determine when users have completed entering all of their credit card information.
  *
  *  3: It listens and responds to events coming from the CreditCardNumberEditField, CreditCardExpirationEditField,
- *  CreditCardSecurityCodeEditField, and the ExpirationPickerDialogFragment. When different events, e.g. a focus
- *  event occurs on one of the entry fields, the CreditCardController determines on which field the focus event
- *  occured and then dispatches an appropriate CreditCardEvent to the state machine.
+ *     CreditCardSecurityCodeEditField, and the ExpirationPickerDialogFragment. When different events, e.g. a focus
+ *     event occurs on one of the entry fields, the CreditCardController determines on which field the focus event
+ *     occurred and then dispatches an appropriate CreditCardEvent to the state machine.
  *
  *  4: It saves and restores the state of the CreditCardNumberEditField, CreditCardExpirationEditField,
- *  CreditCardSecurityCodeEditField, ExpirationPickerDialogFragment, and the state machine.
+ *     CreditCardSecurityCodeEditField, ExpirationPickerDialogFragment, and the state machine.
  *
- *  The logic used for validating what users have entered into different fields is called by the state machine, but exists outside of it, in the Controller; this makes it easy to decouple the state machine from the Controller or modify and extend the state machine as needed.
- * Created by epark on 8/19/14.
+ *  The logic used for validating what users have entered into different fields is called by the state machine,
+ *  but exists outside of it, in the Controller; this makes it easy to decouple the state machine from the Controller
+ *  or modify and extend the state machine as needed.
  */
 public class CreditCardController implements View.OnFocusChangeListener, TextWatcher, ExpirationPickerListener,
         View.OnTouchListener {
 
-    public static final String TAG = CreditCardController.class.getCanonicalName();
+    public static final String TAG = CreditCardController.class.getSimpleName();
 
+    /**************
+     * BUNDLE KEYS
+     **************/
+    private static final String CREDIT_CARD_CONTROLLER_STATE_KEY =
+            CreditCardController.class.getCanonicalName() + ".credit_card_controller_state_key";
+
+    /**
+     * Class to hold the state of the Controller when onSaveInstanceState is called
+     */
     private static class CreditCardControllerState implements Serializable {
         private static final long serialVersionUID = 1L;
         private int currentState = CreditCardState.IDLE_STATE.ordinal();
@@ -77,9 +86,6 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         private boolean happyPathIsBroken = false;
         private int cardIssuer = CreditCardUtilities.CardIssuer.INVALID.ordinal();
     }
-
-    private static final String CREDIT_CARD_CONTROLLER_STATE_KEY = CreditCardController.class.getCanonicalName() +
-            ".credit_card_controller_state_key";
 
     /**
      * Enumerated types representing the possible states of the CreditCardController's state machine.
@@ -97,7 +103,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
 
     /**
      * Enumerated types representing the events that the CreditCardController's state machine handles.
-     * These events are used to look up Transitions in the CreditCardEvent-Transision HashMaps that are
+     * These events are used to look up Transitions in the CreditCardEvent-Transition HashMaps that are
      * associated with each CreditCardState in mTransitionMap.
      */
     public enum CreditCardEvent {
@@ -119,7 +125,8 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
-     *
+     * Interface to define what each transition should do on its execute method. See initTransitionTable() for
+     * implementations.
      */
     public interface Transition {
         void execute();
@@ -148,6 +155,14 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     private CreditCardExpirationEditField mExpDateEditField;
     private CreditCardSecurityCodeEditField mSecCodeEditField;
 
+    /**
+     * Constructor that wires up all of the EditText views, and initializes the controller.
+     *
+     * @param context Android context
+     * @param numberEditField CreditCardNumberEditField view
+     * @param expirationEditField CreditCardExpirationEditField view
+     * @param secCodeEditField CreditCardSecurityCodeEditField view
+     */
     public CreditCardController(Context context,
                                 CreditCardNumberEditField numberEditField,
                                 CreditCardExpirationEditField expirationEditField,
@@ -189,7 +204,6 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         /*
          * If the credit card number field or the expiration date field have focus when the controller
          * is initialized, dispatch an appropriate on focus event.
-         *
          */
         if (mCreditCardNumEditField.hasFocus()) {
             handleEvent(CreditCardEvent.CREDIT_CARD_NUMBER_FIELD_ON_FOCUS_EVENT);
@@ -200,9 +214,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
+     * Used when executing a new Transition to get to a new state. Logs the current state.
      *
-     *
-     * @param state
+     * @param state state the controller is transitioning to.
      */
     private void setCurrentState(CreditCardState state) {
         CreditCardLogger.i(TAG, "Setting current state: " + state.toString());
@@ -210,8 +224,10 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
+     * Method that handles events and determine if there is a transition that can handle the event. Logs handled events
+     * and logs ignored events.
      *
-     * @param event
+     * @param event event to handle.
      */
     public void handleEvent(CreditCardEvent event) {
         Transition transition = mTransitionMap.get(mCurrentState).get(event);
@@ -225,8 +241,10 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
+     * Method to set a CreditCardModelCompleteListener listener. onCreditCardModelComplete is called when all fields
+     * are filled in and valid if there is a non-null listener.
      *
-     * @param creditCardModelCompleteListener
+     * @param creditCardModelCompleteListener CreditCardModelCompleteListener
      */
     public void setCreditCardModelCompleteListener(CreditCardModelCompleteListener creditCardModelCompleteListener) {
         mCreditCardModelCompleteListener = creditCardModelCompleteListener;
@@ -234,7 +252,8 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
 
 
     /**
-     *
+     * Called from each of the evaluate method to determine if all of the information is available to make the callback
+     * to the listener with a complete CreditCardModel.
      */
     public void complete() {
         if (mNumberCompleted && mExpDateCompleted && mSecCodeCompleted && mCreditCardModelCompleteListener != null) {
@@ -247,8 +266,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
-     *
-     * @return
+     * @return true if all information is complete, false otherwise.
      */
     public boolean isComplete() {
         if (mNumberCompleted && mExpDateCompleted && mSecCodeCompleted) {
@@ -260,37 +278,38 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
-     *
-     * @return
+     * @return true if credit card number is valid and has been completed, false otherwise.
      */
     public boolean isCreditCardNumberComplete() {
         return mNumberCompleted;
     }
 
     /**
-     *
-     * @return
+     * @return true if the expiration is valid and has been completed, false otherwise
      */
     public boolean isExpirationDateComplete() {
         return mExpDateCompleted;
     }
 
     /**
-     *
-     * @return
+     * @return true if the security code is valid and has been completed, false otherwise.
      */
     public boolean isSecurityCodeComplete() {
         return mSecCodeCompleted;
     }
 
     /**
-     *
+     * Evaluates the credit card number that has been entered. Determines if the card type has changed, if the
+     * controller needs to be reset, if the credit card number is valid and can transition state to expiration date
+     * entry, or if the card number is invalid and an error state should be set. If everything is complete, call
+     * complete() to build the model and make the call back to the listener if one has been set.
      */
     private void evaluateCreditCardNumber() {
         updateCreditCardType();
         /*
          * If the user has entered and then deleted all of the numbers in the CreditCardNumberEditField,
          * clear all of the fields and reset the happy path.
+         *
          * Note: If the user has already selected an expiration date, the text in the ExpirationDateEditField
          * will be reset, but the stored date will not be reset to today's date.
          */
@@ -338,7 +357,10 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
-     *
+     * Called when there is a card type change. Stores the previous card issuer, gets the new card issuer based on
+     * the credit card number that was entered, calls cardTypeChanged to transition between the old card issuer
+     * and the new card issuer. Re-evaluates the security code to make sure that the length of the security code is
+     * still valid.
      */
     private void updateCreditCardType() {
         CreditCardUtilities.CardIssuer previousCardType = mCardIssuer;
@@ -350,7 +372,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
-     *
+     * Called when there is an update to the credit card/card issuer. Set the state of the security code field
+     * depending on CardIssuer. Update both the CreditCardNumberEditField and the CreditCardSecurityCodeEditField
+     * card type and images.
      */
     private void cardTypeChanged() {
         if (mCardIssuer == CreditCardUtilities.CardIssuer.INVALID) {
@@ -369,7 +393,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
-     *
+     * Based on the CardIssuer type, determine how long the security code length should be, if the current entry is
+     * valid, or if the CreditCardSecurityCodeEditField should have its error state set. If everything is complete, call
+     * complete() to build the model and make the call back to the listener if one has been set.
      */
     private void evaluateSecurityCode() {
         if (mCardIssuer != CreditCardUtilities.CardIssuer.INVALID &&
@@ -402,8 +428,12 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
+     * Evaluate the expiration date to determine if the expiration date entered is valid. Only check the month and the
+     * year. The day is not important when evaluating expiration dates. Set the error state on the field appropriately
+     * If everything is complete, call complete() to build the model and make the call back to the listener if one
+     * has been set.
      *
-     * @param expirationDate
+     * @param expirationDate Date to check if valid.
      */
     private void evaluateExpDate(Date expirationDate) {
         if (expirationDate == null) {
@@ -437,10 +467,10 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
-     * This is used to mask the numbers that have been entered into the SecCodeEditField, i.e. turn
-     * letters into shoulder-surfer-baffling dots.
-     * @param editText
-     * @param transformationMethod
+     * This is used to mask the numbers that have been entered into the SecCodeEditField.
+     *
+     * @param editText current field to apply transformation method to.
+     * @param transformationMethod transformation method to apply.
      */
     private void updateTransformationMethod(EditText editText, TransformationMethod transformationMethod) {
         if (editText != null) {
@@ -449,14 +479,19 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
             stop = editText.getSelectionEnd();
             mIgnoringEvents = true;
             editText.setTransformationMethod(transformationMethod);
-            editText.setSelection(start, stop);
+            // occasionally the start location for the cursor will be -1, only attempt to restore the cursor location
+            // if the values are above 0
+            if (start >= 0 && stop > 0) {
+                editText.setSelection(start, stop);
+            }
             mIgnoringEvents = false;
         }
     }
 
     /**
+     * Initialize the controller from a previously built CreditCardModel.
      *
-     * @param creditCardModel
+     * @param creditCardModel CreditCardModel
      */
     public void loadCreditCardInfoFromModel(CreditCardModel creditCardModel) {
 
@@ -472,15 +507,15 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
-     *
+     * Internal method that's called when initializing the controller and setting each of the view's data.
      *
      * Note: This method does not set the flag that tells the state machine to ignore events. It is
      * expected that the calling function will set the flag.
      *
-     * @param creditCardNumber
-     * @param expDate
-     * @param expDateText
-     * @param secCode
+     * @param creditCardNumber un-formatted credit card number
+     * @param expDate expiration date of the credit card
+     * @param expDateText formatted expiration date of the credit card
+     * @param secCode security code of the credit card
      */
     private void loadCreditCardInfo(String creditCardNumber, Date expDate, String expDateText, String secCode) {
 
@@ -495,6 +530,7 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
+     * Method to save the current state of the controller to be restored at a later point in time.
      *
      * @param savedInstanceState
      */
@@ -521,8 +557,10 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
+     * Method to restore the state of the controller from a previously saved state.
      *
      * Note: The order in which things are restored matters. Be careful when making changes.
+     *
      * @param savedInstanceState
      */
     public void onRestoreSavedInstanceState(Bundle savedInstanceState) {
@@ -594,6 +632,12 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         mIgnoringEvents = false;
     }
 
+    /**
+     * Method to serialize objects when saving state.
+     *
+     * @param object object to serialize
+     * @return byte[] of the serialized object
+     */
     private byte[] serializeObject(Object object) {
         byte[] objectBytes = null;
         try {
@@ -607,6 +651,12 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         return objectBytes;
     }
 
+    /**
+     * Method to deserialize object when restoring state.
+     *
+     * @param objectBytes byte[] of the serialized object.
+     * @return object that was deserialized.
+     */
     private Object deserializeObject(byte[] objectBytes) {
         Object object = null;
         try {
@@ -622,9 +672,11 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
+     * Check touch events to determine if an event needs to be handled to cause a state transition. Only checks the
+     * CreditCardNumberField and CreditCardExpirationEditField. Security code field does not need this listener.
      *
-     * @param view
-     * @param motionEvent
+     * @param view view that received the touch
+     * @param motionEvent type of motion event the view received
      * @return false so that the touch event is not consumed.
      */
     @Override
@@ -641,7 +693,8 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
-     *
+     * Attempt to open the ExpirationPickerDialog, set the listener to be the controller, and update mDatePickerOpen
+     * to reflect the the state of the dialog.
      */
     private void openDatePicker() {
         try {
@@ -659,8 +712,11 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
+     * Called when the expiration date picker has had a value selected. Sets the mDatePickerOpen boolean to reflect
+     * the state of the dialog, updates the expiration date field with the selected date, and evaluate the expiration
+     * date.
      *
-     * @param selectedDate
+     * @param selectedDate date selected for the expiration date.
      */
     @Override
     public void onExpirationDateSelected(Date selectedDate) {
@@ -670,7 +726,8 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
     }
 
     /**
-     *
+     * Called when the expiration date picker has been canceled. Sets the mDatePickerOpen boolean to reflect the state
+     * of the dialog.
      */
     @Override
     public void onDialogPickerCanceled() {
@@ -700,17 +757,11 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         handleEvent(CreditCardEvent.CLOSE_DATE_PICKER_EVENT);
     }
 
-    /**
-     *
-     * @param s
-     * @param start
-     * @param count
-     * @param after
-     */
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {/*NO OP*/ }
 
     /**
+     * Handle TEXT_CHANGED_EVENT's when the text has changed.
      *
      * @param text
      * @param start
@@ -722,17 +773,15 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         handleEvent(CreditCardEvent.TEXT_CHANGED_EVENT);
     }
 
-    /**
-     *
-     * @param editable
-     */
     @Override
     public void afterTextChanged(Editable editable) {/*NO OP*/ }
 
     /**
+     * When focus changes, determine which field has focus, or if all fields have lost focus. Then handle the
+     * X_FIELD_ON_FOCUS_EVENT or FOCUS_LOST_EVENT.
      *
-     * @param view
-     * @param hasFocus
+     * @param view current view gaining/losing focus.
+     * @param hasFocus does the current view have focus.
      */
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
@@ -750,6 +799,9 @@ public class CreditCardController implements View.OnFocusChangeListener, TextWat
         }
     }
 
+    /**
+     * @return the current CardIssuer
+     */
     public CreditCardUtilities.CardIssuer getCardIssuer() {
         return mCardIssuer;
     }

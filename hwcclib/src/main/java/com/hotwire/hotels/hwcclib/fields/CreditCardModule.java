@@ -1,9 +1,3 @@
-/*
- * Copyright 2014 Hotwire. All Rights Reserved.
- *
- * This software is the proprietary information of Hotwire.
- * Use is subject to license terms.
- */
 package com.hotwire.hotels.hwcclib.fields;
 
 import android.content.Context;
@@ -21,37 +15,45 @@ import com.hotwire.hotels.hwcclib.fields.edit.CreditCardNumberEditField;
 import com.hotwire.hotels.hwcclib.fields.edit.CreditCardSecurityCodeEditField;
 
 /**
- * Created by ahobbs on 8/8/14.
+ * Module that can be added to an xml layout file that will have a working credit card library.
+ *
+ * In a layout.xml file adding the following lines are all that is needed to get started
+ *
+ *     <com.hotwire.hotels.hwcclib.fields.CreditCardModule
+ *          android:id="@+id/credit_card_module"
+ *          android:layout_width="match_parent"
+ *          android:layout_height="wrap_content"/>
+ *
  */
 public class CreditCardModule extends LinearLayout {
 
     private static final int DEFAULT_CHILD_WEIGHT = 1;
+
+    // This module can only support a total of children
     private static final int MAX_CHILDREN = 2;
 
+    // Layout that holds the expiration and security code fields
     private LinearLayout mHorizontalLayout;
+    // Credit card number entry field
     private CreditCardNumberEditField mCreditCardNumber;
+    // Expiration date entry field
     private CreditCardExpirationEditField mCreditCardExpiration;
+    // Security code entry field
     private CreditCardSecurityCodeEditField mCreditCardSecurityCode;
+    // The controller to wire up all the fields, and houses all of the logic
     private CreditCardController mCreditCardController;
 
-    /**
-     *
-     * @param context
-     */
     public CreditCardModule(Context context) {
         this(context, null);
     }
 
-    /**
-     *
-     * @param context
-     * @param attrs
-     */
     public CreditCardModule(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
     /**
+     * Overridden constructor from LinearLayout that will also initialize the module, layout the views, and
+     * initializes the CreditCardController.
      *
      * @param context
      * @param attrs
@@ -63,23 +65,8 @@ public class CreditCardModule extends LinearLayout {
     }
 
     /**
-     *
-     * @param creditCardModelCompleteListener
-     */
-    public void setCreditCardModelCompleteListener(CreditCardController.CreditCardModelCompleteListener
-                                                           creditCardModelCompleteListener) {
-        mCreditCardController.setCreditCardModelCompleteListener(creditCardModelCompleteListener);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isComplete() {
-        return mCreditCardController.isComplete();
-    }
-
-    /**
+     * Method to initialize the module. Lays out views and initializes and stores a reference
+     * to the CreditCardController.
      *
      * @param context
      */
@@ -162,45 +149,113 @@ public class CreditCardModule extends LinearLayout {
     /******************************
      * BEGIN CUSTOM METHODS
      ******************************/
+
+    /**
+     * A pass-through method to the controller to add a listener for completeness of the credit card model.
+     *
+     * @param creditCardModelCompleteListener listener.
+     */
+    public void setCreditCardModelCompleteListener(CreditCardController.CreditCardModelCompleteListener
+                                                           creditCardModelCompleteListener) {
+        mCreditCardController.setCreditCardModelCompleteListener(creditCardModelCompleteListener);
+    }
+
+    /**
+     * A pass-through method to the controller to check for completeness of a credit card.
+     *
+     * @return true if the all credit card related data is complete and valid (credit card number, expiration date,
+     *         and security code). false otherwise.
+     */
+    public boolean isComplete() {
+        return mCreditCardController.isComplete();
+    }
+
+    /**
+     * Getter for the CreditCardController.
+     *
+     * @return reference to the CreditCardController.
+     */
+    public CreditCardController getCreditCardController() {
+        return mCreditCardController;
+    }
+
+    /**
+     * A pass-through method to the controller to save the current state. This is mainly used when the module
+     * is added to a layout, and only a reference to the module is used.
+     *
+     * @param savedInstanceState
+     */
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        mCreditCardController.onSaveInstanceState(savedInstanceState);
+    }
+
+    /**
+     * A pass-through method to the controller to restore the saved state. This is mainly used when the module
+     * is added to a layout, and only a reference to the module is used.
+     *
+     * @param savedInstanceState
+     */
+    public void onRestoreSavedInstanceState(Bundle savedInstanceState) {
+        mCreditCardController.onRestoreSavedInstanceState(savedInstanceState);
+    }
+
+    /**
+     * Getting for the credit card number field.
+     *
+     * @return CreditCardNumberEditField reference.
+     */
+    public CreditCardNumberEditField getCreditCardNumberEditField() {
+        return mCreditCardNumber;
+    }
+
+    /**
+     * Getter for the credit card expiration field.
+     *
+     * @return CreditCardExpirationEditField reference.
+     */
+    public CreditCardExpirationEditField getCreditCardExpirationEditField() {
+        return mCreditCardExpiration;
+    }
+
+    /**
+     * Getter for the credit card security code field.
+     *
+     * @return CreditCardSecurityCode reference.
+     */
+    public CreditCardSecurityCodeEditField getCreditCardSecurityCodeEditField() {
+        return mCreditCardSecurityCode;
+    }
+
+    /**
+     * A pass-through method to the controller to get the current card issuer.
+     *
+     * @return the current CardIssuer.
+     */
+    public CreditCardUtilities.CardIssuer getCardIssuer() {
+        return mCreditCardController.getCardIssuer();
+    }
+
+    /**
+     * Method to get the default layout parameters for a LinearLayout
+     *
+     * @return LinearLayout.LayoutParams with default settings
+     */
     private LayoutParams getDefaultLayoutParams() {
         LinearLayout.LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 
         return params;
     }
 
+    /**
+     * Method to get the layout parameters for a LinearLayout with child weight
+     *
+     * @return LinearLayout.LayoutParams with child weight
+     */
     private LinearLayout.LayoutParams getWeightedLayoutParams() {
         LinearLayout.LayoutParams params = new LayoutParams(0 /* 0dp */,
                                                             LayoutParams.WRAP_CONTENT,
                                                             DEFAULT_CHILD_WEIGHT);
 
         return params;
-    }
-
-    public CreditCardController getCreditCardController() {
-        return mCreditCardController;
-    }
-
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        mCreditCardController.onSaveInstanceState(savedInstanceState);
-    }
-
-    public void onRestoreSavedInstanceState(Bundle savedInstanceState) {
-        mCreditCardController.onRestoreSavedInstanceState(savedInstanceState);
-    }
-
-    public CreditCardNumberEditField getCreditCardNumberEditField() {
-        return mCreditCardNumber;
-    }
-
-    public CreditCardExpirationEditField getCreditCardExpirationEditField() {
-        return mCreditCardExpiration;
-    }
-
-    public CreditCardSecurityCodeEditField getCreditCardSecurityCodeEditField() {
-        return mCreditCardSecurityCode;
-    }
-
-    public CreditCardUtilities.CardIssuer getCardIssuer() {
-        return mCreditCardController.getCardIssuer();
     }
 }

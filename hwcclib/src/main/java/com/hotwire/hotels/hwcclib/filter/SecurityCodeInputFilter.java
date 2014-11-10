@@ -4,21 +4,22 @@ import android.text.InputFilter;
 import android.text.Spanned;
 
 /**
- * Created by ahobbs on 9/4/14.
+ * An input filter that restricts length and limits input to only numeric characters.
  */
 public class SecurityCodeInputFilter extends InputFilter.LengthFilter {
     public static final String TAG = SecurityCodeInputFilter.class.getSimpleName();
 
     /**
+     * Constructor that takes in max length for a field.
      *
-     * @param maxLength
+     * @param maxLength maximum length for a field.
      */
     public SecurityCodeInputFilter(int maxLength) {
         super(maxLength);
     }
 
     /**
-     *
+     * Overridden method that limits length of the field and limits the input to only numeric characters.
      *
      * @param source
      * @param start
