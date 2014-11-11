@@ -1,18 +1,25 @@
-/*
- * Copyright 2014 Hotwire. All Rights Reserved.
- *
- * This software is the proprietary information of Hotwire.
- * Use is subject to license terms.
- */
 package com.hotwire.hotels.hwcclib.dialog.date;
 
 import java.util.Date;
 
 /**
- * Created by ahobbs on 8/13/14.
+ * Interface to listen to events from the ExpirationPickerDialogFragment.
  */
 public interface ExpirationPickerListener {
+    /**
+     * Method that will be called from the ExpirationPickerDialogFragment on a canceled button click.
+     */
     void onDialogPickerCanceled();
+
+    /**
+     * Method that will be called from the ExpirationPickerDialogFragment when a date is selected.
+     *
+     * @param selectedDate
+     */
     void onExpirationDateSelected(Date selectedDate);
+
+    /**
+     * Method that is called when ExpirationDialogFragment is destroyed.
+     */
     void onDestroy();
 }

@@ -1,9 +1,3 @@
-/*
- * Copyright 2014 Hotwire. All Rights Reserved.
- *
- * This software is the proprietary information of Hotwire.
- * Use is subject to license terms.
- */
 package com.hotwire.hotels.hwcclib.dialog.date;
 
 import android.app.AlertDialog;
@@ -11,10 +5,8 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.NumberPicker;
 
 import com.hotwire.hotels.hwcclib.R;
@@ -25,39 +17,52 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by ahobbs on 8/12/14.
+ * DialogFragment for selecting the expiration date for a Credit Card.
  */
 public class ExpirationPickerDialogFragment extends DialogFragment {
-    public static final String TAG = "DatePickerDialogFragment";
+    public static final String TAG = ExpirationPickerDialogFragment.class.getSimpleName();
 
+    /**************
+     * BUNDLE KEYS
+     **************/
     private static final String TITLE_KEY = ExpirationPickerDialogFragment.class.getCanonicalName() + ".title_key";
     private static final String DATE_KEY = ExpirationPickerDialogFragment.class.getCanonicalName() + ".date_key";
     private static final String MONTH_PICKER_KEY = ExpirationPickerDialogFragment.class.getCanonicalName() + ".month_picker_key";
     private static final String YEAR_PICKER_KEY = ExpirationPickerDialogFragment.class.getCanonicalName() + ".year_picker_key";
+
+    /* Value to override expiration date day with.
+     * Expiration dates are not checked against the day, only month and year.
+     */
     private static final int FIRST_OF_THE_MONTH = 1;
 
+    // Listener to call back into when a selection is made
     private ExpirationPickerListener mExpirationPickerListener;
+
+    // Pickers for month and year
     private NumberPicker mNumberPickerMonth;
     private NumberPicker mNumberPickerYear;
 
+    // Display values for months and years
     private String[] mDisplayMonths;
     private String[] mDisplayYears;
 
+    // Title of the dialog fragment
     private int mTitleResource;
+
+    // Stored selected values from the dialog
     private int mMonthPickerValue;
     private int mYearPickerValue;
-    /**
-     *
-     */
+
     public ExpirationPickerDialogFragment() {
-        // intentionally empty
+        // intentionally empty per Android documentation
     }
 
     /**
+     * Create a dialog fragment with the provided title resource id, and initial expiration date.
      *
-     * @param titleResource
-     * @param currentExpiration
-     * @return
+     * @param titleResource resourceId of the title to be displayed with the dialog.
+     * @param currentExpiration expiration date to set the number pickers to when instantiated.
+     * @return an ExpirationPickerDialogFragment.
      */
     public static ExpirationPickerDialogFragment newInstance(int titleResource, Date currentExpiration) {
         ExpirationPickerDialogFragment dialogFragment = new ExpirationPickerDialogFragment();
@@ -70,18 +75,14 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
+     * Create a dialog fragment with a default title, and today's date as the expiration.
      *
-     * @return
+     * @return an ExpirationPickerDialogFragment.
      */
     public static ExpirationPickerDialogFragment newInstance() {
         return newInstance(R.string.expiration_picker_default_title, new Date());
     }
 
-    /**
-     *
-     * @param savedInstanceState
-     * @return
-     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -133,6 +134,8 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
+     * Store the title resource used, the currently selected value for month, and the currently selected value for
+     * year.
      *
      * @param outState
      */
@@ -147,7 +150,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
-     * This is a hack for a known bug involving the dismissal of a dialog on a screen orientation change
+     * This is a hack for a known bug involving the dismissal of a dialog on a screen orientation change.
      */
     @Override
     public void onDestroyView() {
@@ -164,6 +167,11 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
      * BEGIN CUSTOM METHODS
      ******************************/
 
+    /**
+     * Sets the listener to call back to, when a selection is made, or cancel is pressed.
+     *
+     * @param listener listener to call when there is user interaction.
+     */
     public void setDatePickerListener(ExpirationPickerListener listener) {
         if (listener != null) {
             mExpirationPickerListener = listener;
@@ -171,12 +179,36 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
+     * On a positive click of the dialog, call this method. Build a date from the selected NumberPicker values,
+     * make a call to the ExpirationPickerListener, and dismiss the dialog.
      *
-     * @param v
-     * @param numberPickerResourceId
-     * @param currentValue
-     * @param displayValues
-     * @return
+     * @param dialog the current dialog.
+     */
+    public void positiveClick(DialogInterface dialog) {
+        Date date = buildDate();
+        callPositiveListener(date);
+        dialog.dismiss();
+    }
+
+    /**
+     * On a neutral click of the dialog, call this method. Make a call to the ExpirationPickerListener, and dismiss
+     * the dialog.
+     *
+     * @param dialog the current dialog.
+     */
+    public void neutralClick(DialogInterface dialog) {
+        callNegativeListener();
+        dialog.dismiss();
+    }
+
+    /**
+     * Creates and initializes a NumberPicker view.
+     *
+     * @param v current dialog fragment view.
+     * @param numberPickerResourceId resource id of the.
+     * @param currentValue number picker's current value.
+     * @param displayValues display values to show in the number picker.
+     * @return a NumberPicker with proper slection and display value.
      */
     private NumberPicker getNumberPickerView(View v,
                                              int numberPickerResourceId,
@@ -196,8 +228,9 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
+     * Calls the listener when a date is selected if non-null.
      *
-     * @param selectedDate
+     * @param selectedDate date that was selected from the picker.
      */
 
     private void callPositiveListener(Date selectedDate) {
@@ -207,7 +240,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
-     *
+     * Calls the listener when cancel is selected if non-null.
      */
     private void callNegativeListener() {
         if (mExpirationPickerListener != null) {
@@ -216,8 +249,9 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
+     * Builds a date object from the values of the NumberPickers. Defaults the date to the first day of the month.
      *
-     * @return
+     * @return a Date object representing the expiration date for the credit card.
      */
     private Date buildDate() {
         Calendar cal = Calendar.getInstance();
@@ -231,10 +265,11 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
+     * Based on calendarValue (Month or year), get the value from the provided date in milliseconds.
      *
-     * @param dateMs
-     * @param calendarValue
-     * @return
+     * @param dateMs a date in milliseconds.
+     * @param calendarValue calendar value to extract from the date in milliseconds.
+     * @return the Month or Year value from dateMs or 0 if calendarValue is not MONTH or YEAR.
      */
     private int getValueFromDate(long dateMs, int calendarValue) {
         Calendar cal = Calendar.getInstance();
@@ -261,8 +296,9 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
+     * Method to setup positive click listener for the dialog.
      *
-     * @return
+     * @return an OnClickListener for the positive click.
      */
     private DialogInterface.OnClickListener getPositiveClickListener() {
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
@@ -276,18 +312,9 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
-     * Used for unit testing
-     * @param dialog
-     */
-    public void positiveClick(DialogInterface dialog) {
-        Date date = buildDate();
-        callPositiveListener(date);
-        dialog.dismiss();
-    }
-
-    /**
+     * Method to setup neutral click listener for the dialog.
      *
-     * @return
+     * @return an OnClickListener for the neutral click.
      */
     private DialogInterface.OnClickListener getNeutralClickListener() {
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
@@ -301,17 +328,10 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
-     * Used for unit testing
-     * @param dialog
-     */
-    public void neutralClick(DialogInterface dialog) {
-        callNegativeListener();
-        dialog.dismiss();
-    }
-
-    /**
+     * Method to setup the value change listener for the month NumberPicker. Updates mMonthPickerValue on
+     * each change of the picker.
      *
-     * @return
+     * @return an OnValueChangeListener for the month NumberPicker.
      */
     private NumberPicker.OnValueChangeListener getMonthOnValueChangeListener() {
         return new NumberPicker.OnValueChangeListener() {
@@ -323,8 +343,10 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
+     * Method to setup the value change listener for the year NumberPicker. Updates mYearPickerValue on
+     * each change of the picker.
      *
-     * @return
+     * @return an OnValueChangeListener for the year NumberPicker.
      */
     private NumberPicker.OnValueChangeListener getYearOnValueChangeListener() {
         return new NumberPicker.OnValueChangeListener() {
@@ -336,9 +358,11 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
+     * Creates the display values for the year NumberPicker. Using the maxYearsOffset, create a String[] of values
+     * between today's year to today's year + maxYearsOffset.
      *
-     * @param maxYearsOffset
-     * @return
+     * @param maxYearsOffset number of years into the future to generate display values for.
+     * @return a String[] of display values for the year NumberPicker.
      */
     private String[] generatePickerYears(int maxYearsOffset) {
         Calendar cal = Calendar.getInstance();
@@ -350,9 +374,9 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
         return listOfYears.toArray(new String[]{});
     }
 
-    /******************************
-     * Methods for unit testing
-     ******************************/
+    /*****************
+     * Helper Methods
+     *****************/
 
     public NumberPicker getNumberPickerYear() {
         return mNumberPickerYear;

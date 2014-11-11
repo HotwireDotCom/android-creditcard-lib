@@ -1,9 +1,3 @@
-/*
- * Copyright 2014 Hotwire. All Rights Reserved.
- *
- * This software is the proprietary information of Hotwire.
- * Use is subject to license terms.
- */
 package com.hotwire.hotels.hwcclib.fields.edit;
 
 import android.content.Context;
@@ -21,34 +15,24 @@ import com.hotwire.hotels.hwcclib.animation.drawable.AnimatedScaleDrawable;
 import com.hotwire.hotels.hwcclib.filter.SecurityCodeInputFilter;
 
 /**
- * Created by ahobbs on 8/8/14.
+ * EditText field for credit card security code entry.
  */
 public class CreditCardSecurityCodeEditField extends EditText {
     public static final String TAG = CreditCardSecurityCodeEditField.class.getSimpleName();
 
-    public static final int NO_RES_ID = -1;
-
     private final Context mContext;
     private AnimatedScaleDrawable mAnimatedScaleDrawable;
 
-    /**
-     *
-     * @param context
-     */
     public CreditCardSecurityCodeEditField(Context context) {
         this(context, null);
     }
 
-    /**
-     *
-     * @param context
-     * @param attrs
-     */
     public CreditCardSecurityCodeEditField(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.editTextStyle);
     }
 
     /**
+     * Overridden constructor from EditText that will also initialize the field.
      *
      * @param context
      * @param attrs
@@ -61,10 +45,9 @@ public class CreditCardSecurityCodeEditField extends EditText {
     }
 
     /**
-     *
+     * Method to initialize the field when created.
      */
     private void init() {
-        // can this be a style?
         setHint(R.string.security_code_field_hint_text);
         setHintTextColor(mContext.getResources().getColor(R.color.field_text_color_hint_default));
         setGravity(Gravity.BOTTOM);
@@ -91,18 +74,19 @@ public class CreditCardSecurityCodeEditField extends EditText {
      ******************************/
 
     /**
+     * Sets the new card type for security code on the field, if a valid resourceId.
      *
-     * @param newSecurityCodeResId
+     * @param newSecurityCodeResId resourceId for the new security code card image for the field.
      */
     private void setCardTypeForField(int newSecurityCodeResId) {
-        if (newSecurityCodeResId != NO_RES_ID) {
+        if (newSecurityCodeResId != CreditCardUtilities.NO_RES_ID) {
             Drawable newFieldDrawable = mContext.getResources().getDrawable(newSecurityCodeResId);
             mAnimatedScaleDrawable.startDrawableTransition(newFieldDrawable);
         }
     }
 
     /**
-     *
+     * Clears the error state of the field. Removes the error, and changes the text color back to default.
      */
     public void clearErrors() {
         setError(null);
@@ -110,18 +94,20 @@ public class CreditCardSecurityCodeEditField extends EditText {
     }
 
     /**
-     *
+     * Sets the error state on the field with no message.
      */
     public void setErrorState() {
-        setErrorState(NO_RES_ID);
+        setErrorState(CreditCardUtilities.NO_RES_ID);
     }
 
     /**
+     * Sets the error state on the field with the message provided as a resourceId. If context is null or the
+     * errorMessageResId isn't valid.
      *
-     * @param errorMessageResId
+     * @param errorMessageResId resourceId of the message to be displayed in the error state.
      */
     public void setErrorState(int errorMessageResId) {
-        if (mContext != null && errorMessageResId != NO_RES_ID) {
+        if (mContext != null && errorMessageResId != CreditCardUtilities.NO_RES_ID) {
             setErrorState(mContext.getString(errorMessageResId));
         }
         else {
@@ -130,8 +116,10 @@ public class CreditCardSecurityCodeEditField extends EditText {
     }
 
     /**
+     * Sets the error state on the field with the errorMessage provided as a string. If context is null or the string
+     * is null/empty, still attempt to change text color to error if context is non-null.
      *
-     * @param errorMessage
+     * @param errorMessage error message string to be displayed in the error state.
      */
     public void setErrorState(String errorMessage) {
         if (errorMessage != null && !errorMessage.isEmpty()) {
@@ -144,9 +132,11 @@ public class CreditCardSecurityCodeEditField extends EditText {
     }
 
     /**
+     * Normally called from the controller when a card type has changed. Updates the security code card type image,
+     * and applies the proper InputFilter for that card type.
      *
-     * @param cardIssuer
-     * @param shouldAnimate
+     * @param cardIssuer which card issues (eg. Visa, MasterCard, etc).
+     * @param shouldAnimate boolean that determines if the animation between card types should take place.
      */
     public void updateCardType(CreditCardUtilities.CardIssuer cardIssuer, boolean shouldAnimate) {
         int secResId = cardIssuer.getSecurityIconResourceId();
@@ -164,6 +154,7 @@ public class CreditCardSecurityCodeEditField extends EditText {
     /**
      * This is intended to be used only by the controller's restoreInstanceState method in order
      * to restore the appropriate security code image.
+     *
      * @param secCodeResId
      */
     private void setSecurityResourceImage(int secCodeResId) {
@@ -175,8 +166,9 @@ public class CreditCardSecurityCodeEditField extends EditText {
     }
 
     /**
+     * Initializes the AnimatedScaleDrawable on the field with provided drawable. Sets the default animation time.
      *
-     * @param drawable
+     * @param drawable Drawable to initialize AnimatedScaleDrawable with.
      */
     private void initializeAnimatedScaleDrawable(Drawable drawable) {
         mAnimatedScaleDrawable = new AnimatedScaleDrawable(drawable);
