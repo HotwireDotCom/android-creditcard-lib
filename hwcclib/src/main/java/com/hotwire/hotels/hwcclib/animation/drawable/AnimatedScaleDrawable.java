@@ -21,8 +21,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 
 /**
- * Modified implementation of AnimatedScaleDrawable from
- * https://github.com/slightfoot/android-animatedscaledrawable
+ * Modified implementation of AnimatedScaleDrawable from https://github.com/slightfoot/android-animatedscaledrawable
  */
 public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback, Animatable {
     public static final String TAG = AnimatedScaleDrawable.class.getSimpleName();
@@ -41,36 +40,19 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
 
     private final Rect mTmpRect = new Rect();
 
-    /**
-     * TODO
-     */
     public AnimatedScaleDrawable() {
         this(null, null);
     }
 
-    /**
-     * TODO
-     */
     public AnimatedScaleDrawable(Drawable drawable) {
         this(null, null);
         setDrawable(drawable);
     }
 
-    /**
-     * TODO
-     *
-     * @param pulsingState
-     * @param res
-     */
     private AnimatedScaleDrawable(AnimationScaleState pulsingState, Resources res) {
         mState = new AnimationScaleState(pulsingState, this, res);
     }
 
-    /**
-     * TODO
-     *
-     * @param drawable
-     */
     public void setDrawable(Drawable drawable) {
 
         if (mState.mDrawable != drawable) {
@@ -89,11 +71,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     *
-     * @param transitionDrawable
-     */
     public void startDrawableTransition(Drawable transitionDrawable) {
 
         if (null != transitionDrawable) {
@@ -103,164 +80,75 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     *
-     * @param context
-     * @param resId
-     */
     public void setInterpolator(Context context, int resId) {
         setInterpolator(AnimationUtils.loadInterpolator(context, resId));
     }
 
-    /**
-     * TODO
-     *
-     * @param interpolator
-     */
     public void setInterpolator(Interpolator interpolator) {
         mState.mInterpolator = interpolator;
     }
 
-    /**
-     * TODO
-     *
-     * @param duration
-     */
     public void setDuration(int duration) {
         mState.mDuration = duration;
     }
 
-    /**
-     * TODO
-     *
-     * @param fromScaleX
-     */
     public void setFromScaleX(float fromScaleX) {
         mState.mFromScaleX = fromScaleX;
     }
 
-    /**
-     * TODO
-     *
-     * @param toScaleX
-     */
     public void setToScaleX(float toScaleX) {
         mState.mToScaleX = toScaleX;
     }
 
-    /**
-     * TODO
-     *
-     * @param fromScaleY
-     */
     public void setFromScaleY(float fromScaleY) {
         mState.mFromScaleY = fromScaleY;
     }
 
-    /**
-     * TODO
-     *
-     * @param toScaleY
-     */
     public void setToScaleY(float toScaleY) {
         mState.mToScaleY = toScaleY;
     }
 
-    /**
-     * TODO
-     *
-     * @param useBounds
-     */
     public void setUseBounds(boolean useBounds) {
         mState.mUseBounds = useBounds;
         onBoundsChange(getBounds());
     }
 
-    /**
-     * TODO
-     *
-     * @param invert
-     */
     public void setInvertTransformation(boolean invert) {
         mState.mInvert = invert;
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     public Interpolator getInterpolator() {
         return mState.mInterpolator;
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     public int getDuration() {
         return mState.mDuration;
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     public float getFromScaleX() {
         return mState.mFromScaleX;
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     public float getToScaleX() {
         return mState.mToScaleX;
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     public float getFromScaleY() {
         return mState.mFromScaleY;
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     public float getToScaleY() {
         return mState.mToScaleY;
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     public boolean isUsingBounds() {
         return mState.mUseBounds;
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     public boolean isInvertingTransformation() {
         return mState.mInvert;
     }
 
-    /**
-     * TODO
-     */
     @Override
     public void start() {
         if (mState.mAnimating) {
@@ -293,29 +181,16 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         invalidateSelf();
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     @Override
     public boolean isRunning() {
         return mState.mAnimating;
     }
 
-    /**
-     * TODO
-     */
     @Override
     public void stop() {
         mState.mAnimating = false;
     }
 
-    /**
-     * TODO
-     *
-     * @param canvas
-     */
     public void draw(Canvas canvas) {
         final AnimationScaleState st = mState;
 
@@ -370,9 +245,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     */
     private void swapScaleXvalues() {
         float tmp;
         tmp = mState.mFromScaleX;
@@ -380,12 +252,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         mState.mToScaleX = tmp;
     }
 
-    /**
-     * TODO
-     *
-     * @param state
-     * @return
-     */
     @Override
     protected boolean onStateChange(int[] state) {
         boolean changed = false;
@@ -396,12 +262,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         return changed;
     }
 
-    /**
-     * TODO
-     *
-     * @param level
-     * @return
-     */
     @Override
     protected boolean onLevelChange(int level) {
         if (mState.mDrawable != null) {
@@ -411,11 +271,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         return true;
     }
 
-    /**
-     * TODO
-     *
-     * @param bounds
-     */
     @Override
     protected void onBoundsChange(Rect bounds) {
         if (mState.mDrawable != null) {
@@ -430,11 +285,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     @Override
     public int getIntrinsicWidth() {
         if (mState.mDrawable != null) {
@@ -445,11 +295,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     @Override
     public int getIntrinsicHeight() {
         if (mState.mDrawable != null) {
@@ -460,20 +305,10 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     public Drawable getDrawable() {
         return mState.mDrawable;
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     @Override
     public int getChangingConfigurations() {
         int changing = super.getChangingConfigurations() | mState.mChangingConfigurations;
@@ -483,33 +318,18 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         return changing;
     }
 
-    /**
-     * TODO
-     *
-     * @param alpha
-     */
     public void setAlpha(int alpha) {
         if (mState.mDrawable != null) {
             mState.mDrawable.setAlpha(alpha);
         }
     }
 
-    /**
-     * TODO
-     *
-     * @param cf
-     */
     public void setColorFilter(ColorFilter cf) {
         if (mState.mDrawable != null) {
             mState.mDrawable.setColorFilter(cf);
         }
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     public int getOpacity() {
         if (mState.mDrawable != null) {
             return mState.mDrawable.getOpacity();
@@ -519,11 +339,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     *
-     * @param who
-     */
     @Override
     public void invalidateDrawable(Drawable who) {
         final Callback callback = getCallbackCompat();
@@ -533,13 +348,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     *
-     * @param who
-     * @param what
-     * @param when
-     */
     @Override
     public void scheduleDrawable(Drawable who, Runnable what, long when) {
         final Callback callback = getCallbackCompat();
@@ -549,12 +357,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     *
-     * @param who
-     * @param what
-     */
     @Override
     public void unscheduleDrawable(Drawable who, Runnable what) {
 
@@ -565,11 +367,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     @SuppressLint("NewApi")
     private Callback getCallbackCompat() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -593,12 +390,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     *
-     * @param padding
-     * @return
-     */
     @Override
     public boolean getPadding(Rect padding) {
         if (mState.mDrawable != null) {
@@ -610,13 +401,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         }
     }
 
-    /**
-     * TODO
-     *
-     * @param visible
-     * @param restart
-     * @return
-     */
     @Override
     public boolean setVisible(boolean visible, boolean restart) {
         if (mState.mDrawable != null) {
@@ -625,21 +409,11 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         return super.setVisible(visible, restart);
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     @Override
     public boolean isStateful() {
         return mState.mDrawable != null && mState.mDrawable.isStateful();
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     @Override
     public ConstantState getConstantState() {
         if (mState.canConstantState()) {
@@ -649,11 +423,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         return null;
     }
 
-    /**
-     * TODO
-     *
-     * @return
-     */
     @Override
     public AnimatedScaleDrawable mutate() {
         if (!mMutated && super.mutate() == this) {
@@ -663,9 +432,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         return this;
     }
 
-    /**
-     * TODO
-     */
     static final class AnimationScaleState extends Drawable.ConstantState {
         Drawable mDrawable;
 
@@ -689,13 +455,6 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
         private boolean mCanConstantState;
         private boolean mCheckedConstantState;
 
-        /**
-         * TODO
-         *
-         * @param source
-         * @param owner
-         * @param res
-         */
         public AnimationScaleState(AnimationScaleState source, AnimatedScaleDrawable owner, Resources res) {
             if (source != null) {
                 if (res != null) {
@@ -723,42 +482,21 @@ public class AnimatedScaleDrawable extends Drawable implements Drawable.Callback
             }
         }
 
-        /**
-         * TODO
-         *
-         * @return
-         */
         @Override
         public Drawable newDrawable() {
             return new AnimatedScaleDrawable(this, null);
         }
 
-        /**
-         * TODO
-         *
-         * @param res
-         * @return
-         */
         @Override
         public Drawable newDrawable(Resources res) {
             return new AnimatedScaleDrawable(this, res);
         }
 
-        /**
-         * TODO
-         *
-         * @return
-         */
         @Override
         public int getChangingConfigurations() {
             return mChangingConfigurations;
         }
 
-        /**
-         * TODO
-         *
-         * @return
-         */
         public boolean canConstantState() {
             if (!mCheckedConstantState) {
                 mCanConstantState = mDrawable.getConstantState() != null;
