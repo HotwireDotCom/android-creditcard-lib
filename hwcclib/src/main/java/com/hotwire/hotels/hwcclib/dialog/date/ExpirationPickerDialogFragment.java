@@ -128,7 +128,7 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
         builder.setTitle(mTitleResource)
                .setView(v)
                .setPositiveButton(R.string.expiration_picker_button_positive, getPositiveClickListener())
-               .setNeutralButton(R.string.expiration_picker_button_neutral, getNeutralClickListener());
+               .setNegativeButton(R.string.expiration_picker_button_negative, getNegativeClickListener());
 
         return builder.create();
     }
@@ -191,12 +191,12 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
-     * On a neutral click of the dialog, call this method. Make a call to the ExpirationPickerListener, and dismiss
+     * On a negative click of the dialog, call this method. Make a call to the ExpirationPickerListener, and dismiss
      * the dialog.
      *
      * @param dialog the current dialog.
      */
-    public void neutralClick(DialogInterface dialog) {
+    public void negativeClick(DialogInterface dialog) {
         callNegativeListener();
         dialog.dismiss();
     }
@@ -312,15 +312,15 @@ public class ExpirationPickerDialogFragment extends DialogFragment {
     }
 
     /**
-     * Method to setup neutral click listener for the dialog.
+     * Method to setup negative click listener for the dialog.
      *
-     * @return an OnClickListener for the neutral click.
+     * @return an OnClickListener for the negative click.
      */
-    private DialogInterface.OnClickListener getNeutralClickListener() {
+    private DialogInterface.OnClickListener getNegativeClickListener() {
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                neutralClick(dialog);
+                negativeClick(dialog);
             }
         };
 

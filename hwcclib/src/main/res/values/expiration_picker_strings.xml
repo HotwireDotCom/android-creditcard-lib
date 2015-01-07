@@ -2,7 +2,7 @@
 <resources>
     <string name="expiration_picker_default_title">Expiration date</string>
     <string name="expiration_picker_button_positive">Set</string>
-    <string name="expiration_picker_button_neutral">Cancel</string>
+    <string name="expiration_picker_button_negative">Cancel</string>
 
     <string-array name="expiration_picker_display_months">
         <item>Jan &#8212; 01</item>
