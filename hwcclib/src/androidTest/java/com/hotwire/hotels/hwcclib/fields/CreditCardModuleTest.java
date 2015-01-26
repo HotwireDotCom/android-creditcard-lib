@@ -34,9 +34,6 @@ import org.robolectric.util.ActivityController;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by ahobbs on 8/29/14.
- */
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = "src/main/AndroidManifest.xml")
 public class CreditCardModuleTest {
