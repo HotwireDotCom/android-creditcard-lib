@@ -159,7 +159,7 @@ You can install Hotwire’s hwcclib in your current project by adding the follow
 ```
 
 ##Credits
-Created by Elliot Park, Austin Hobbs, Snehanth Somireddy and Ankur Pal with thanks to: William Hicks.
+Created by Elliott Park, Austin Hobbs, Snehanth Somireddy and Ankur Pal with thanks to: William Hicks.
 
 ##Legal
 This project is available under the Apache 2.0 License.
