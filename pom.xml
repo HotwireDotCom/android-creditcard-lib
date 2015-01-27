@@ -9,12 +9,6 @@
     <packaging>pom</packaging>
     <name>root</name>
 
-    <parent>
-        <groupId>com.hotwire.maven</groupId>
-        <artifactId>HotwireAndroidParent</artifactId>
-        <version>1.0.0</version>
-    </parent>
-
     <properties>
         <android.sdk.path>${env.ANDROID_HOME}</android.sdk.path>
         <android.version>4.2.2</android.version>
