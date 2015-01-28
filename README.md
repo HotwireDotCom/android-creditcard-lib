@@ -128,35 +128,6 @@ private void init(Context context) {
 }
       
 ```
-## Installing
-
-You can install Hotwire’s hwcclib in your current project by adding the following lines of xml to your pom.xml file:
-
-```
-<dependency>
-   <groupId>com.hotwire.hwcclib</groupId>
-   <artifactId>hwcclib</artifactId>
-   <version>1.0.2</version>
-   <type>apklib</type>
-</dependency>
-```
-
-**Note:** hwcclib uses **Robolectric** for testing some components. If **Robolectric** is already part of your current project, it may need to be excluded. Adding the following lines of xml to your pom.xml will exclude hwcclib’s **Robolectric** dependency:
-
-```
-<dependency>
-   <groupId>com.hotwire.hwcclib</groupId>
-   <artifactId>hwcclib</artifactId>
-   <version>1.0.2</version>
-   <type>apklib</type>
-   <exclusions>
-      <exclusion>
-         <groupId>org.robolectric</groupId>
-         <artifactId>robolectric</artifactId>
-      </exclusion>
-   </exclusions>
-</dependency>
-```
 
 ##Credits
 Created by Elliott Park, Austin Hobbs, Snehanth Somireddy and Ankur Pal with thanks to: William Hicks.
